@@ -4,6 +4,7 @@ extends VehicleBody3D
 @export var MAX_TORQUE := 300
 @export var TURN_SPEED := 3
 @export var TURN_AMOUNT := 0.4
+
 @onready var rear_left_wheel: VehicleWheel3D = $RearLeftWheel
 @onready var rear_right_wheel: VehicleWheel3D = $RearRightWheel
 @onready var camera_arm: SpringArm3D = $CameraArm

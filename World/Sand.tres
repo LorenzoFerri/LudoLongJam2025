@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://l7ejjwsp823g"]
+
+[ext_resource type="Shader" uid="uid://d0mvaq5nhoepe" path="res://Track.gdshader" id="1_q712t"]
+[ext_resource type="Texture2D" uid="uid://b6tm0iouwi0wf" path="res://World/Texture/Ground080_1K-JPG_Color.jpg" id="2_yxli1"]
+[ext_resource type="Texture2D" uid="uid://fgbxi3wobitw" path="res://World/Texture/Ground080_1K-JPG_AmbientOcclusion.jpg" id="3_hv7da"]
+[ext_resource type="Texture2D" uid="uid://bj2k856nqx7de" path="res://World/Texture/Ground080_1K-JPG_Displacement.jpg" id="4_dwljj"]
+[ext_resource type="Texture2D" uid="uid://bbsm10og3ercu" path="res://World/Texture/Ground080_1K-JPG_NormalGL.jpg" id="5_1rbph"]
+[ext_resource type="Texture2D" uid="uid://dia570vexn0q7" path="res://World/Texture/Ground080_1K-JPG_Roughness.jpg" id="6_wtbif"]
+[ext_resource type="Texture2D" uid="uid://bc7ehspyx5w8w" path="res://World/Texture/Track.jpg" id="7_na8va"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_q712t")
+shader_parameter/albedo_texture = ExtResource("2_yxli1")
+shader_parameter/uv_scale = 4.00000018674012
+shader_parameter/normal_texture = ExtResource("5_1rbph")
+shader_parameter/normal_strength = 1.0
+shader_parameter/roughness_texture = ExtResource("6_wtbif")
+shader_parameter/roughness_strength = 1.0
+shader_parameter/displacement_texture = ExtResource("4_dwljj")
+shader_parameter/displacement_strength = 0.05
+shader_parameter/displacement_bias = 0.0
+shader_parameter/track_texture = ExtResource("7_na8va")
+shader_parameter/track_intensity = 0.20000000298023
+shader_parameter/player_position = Vector3(0, 0, 0)
+shader_parameter/track_size = 6.982000284145
+shader_parameter/ao_texture = ExtResource("3_hv7da")
+shader_parameter/ao_strength = 1.0
+shader_parameter/metallic = 0.0
+shader_parameter/specular = 0.50000002375

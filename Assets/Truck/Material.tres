@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://bn4catggyg8nl"]
+
+[ext_resource type="Texture2D" uid="uid://b1ys701qe12eh" path="res://Assets/Truck/Truck.png" id="1_hi88w"]
+[ext_resource type="Texture2D" uid="uid://cfllrpm5ifwyc" path="res://Assets/Truck/Truck_AO.png" id="2_32eap"]
+
+[resource]
+resource_name = "Material"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+albedo_texture = ExtResource("1_hi88w")
+emission_enabled = true
+ao_enabled = true
+ao_texture = ExtResource("2_32eap")

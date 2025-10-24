@@ -3,6 +3,8 @@ extends StaticBody3D
 class_name TerrainChunk
 var _heightmap: Array
 
+var rock_scene := preload("res://Rocks/rock.tscn")
+
 ## Singolo chunk del terreno con mesh e collisione
 
 var mesh_instance: MeshInstance3D
@@ -133,6 +135,16 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 		var default_material := StandardMaterial3D.new()
 		default_material.albedo_color = Color(0.3, 0.6, 0.3)
 		mesh_instance.material_override = default_material
+	
+	if randi_range(0, 20) == 0:
+		var rock: StaticBody3D = rock_scene.instantiate()
+		add_child(rock)
+		var v = vertices[resolution / 2][resolution / 2]
+		rock.position.y = v.y - 0.8
+		var norm = normals[resolution / 2][resolution / 2]
+		rock.look_at_from_position(rock.position, rock.position + norm, Vector3.FORWARD)
+		rock.rotate(Vector3.RIGHT, deg_to_rad(90))
+		rock.rotate(norm, deg_to_rad(randi_range(0, 360)))
 	
 	# Crea collisione
 	_create_collision(vertices, chunk_size, resolution)

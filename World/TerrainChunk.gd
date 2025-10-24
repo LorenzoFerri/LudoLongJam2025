@@ -139,12 +139,13 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 	if randi_range(0, 20) == 0:
 		var rock: StaticBody3D = rock_scene.instantiate()
 		add_child(rock)
-		var v = vertices[resolution / 2][resolution / 2]
-		rock.position.y = v.y - 0.8
-		var norm = normals[resolution / 2][resolution / 2]
-		rock.look_at_from_position(rock.position, rock.position + norm, Vector3.FORWARD)
-		rock.rotate(Vector3.RIGHT, deg_to_rad(90))
-		rock.rotate(norm, deg_to_rad(randi_range(0, 360)))
+		rock.position.y = 15
+		# var v = vertices[float(resolution) / 2][float(resolution) / 2]
+		# rock.position.y = v.y - 1.3
+		# var norm = normals[float(resolution) / 2][float(resolution) / 2]
+		# rock.look_at_from_position(rock.position, rock.position + norm, Vector3.FORWARD)
+		# rock.rotate(Vector3.RIGHT, deg_to_rad(90))
+		# rock.rotate(norm, deg_to_rad(randi_range(0, 360)))
 	
 	# Crea collisione
 	_create_collision(vertices, chunk_size, resolution)

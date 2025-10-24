@@ -1,9 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csmfywnb0ngty"]
 
-[ext_resource type="Script" uid="uid://b6ka18ceqhjdn" path="res://World/DesertChunkManager.gd" id="1_fdly5"]
+[ext_resource type="Script" uid="uid://474femlgqvi4" path="res://World/TerrainManager.gd" id="1_fdly5"]
 
-[node name="DesertChunkManager" type="Node3D"]
+[node name="TerrainManager" type="Node3D"]
 script = ExtResource("1_fdly5")
-chunk_height = 10.7
-noise_scale = 0.01
-noise_amplitude = 14.85

@@ -3,7 +3,22 @@ extends StaticBody3D
 class_name TerrainChunk
 var _heightmap: Array
 
-var rock_scene := preload("res://Rocks/rock.tscn")
+var rocks_scenes = [
+	preload("res://Rocks/BigRock1.tscn"),
+	preload("res://Rocks/BigRock2.tscn"),
+	preload("res://Rocks/BigRock3.tscn"),
+	preload("res://Rocks/MediumRock1.tscn"),
+	preload("res://Rocks/MediumRock2.tscn"),
+	preload("res://Rocks/MediumRock3.tscn"),
+	preload("res://Rocks/MediumRock4.tscn"),
+	preload("res://Rocks/MediumRock5.tscn"),
+	preload("res://Rocks/SmallRock1.tscn"),
+	preload("res://Rocks/SmallRock2.tscn"),
+	preload("res://Rocks/SmallRock3.tscn"),
+	preload("res://Rocks/SmallRock4.tscn"),
+	preload("res://Rocks/SmallRock5.tscn"),
+	preload("res://Rocks/SmallRock6.tscn")
+]
 
 ## Singolo chunk del terreno con mesh e collisione
 
@@ -136,8 +151,8 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 		default_material.albedo_color = Color(0.3, 0.6, 0.3)
 		mesh_instance.material_override = default_material
 	
-	if randi_range(0, 20) == 0:
-		var rock: StaticBody3D = rock_scene.instantiate()
+	if randi_range(0, 18) == 0:
+		var rock: StaticBody3D = rocks_scenes.pick_random().instantiate()
 		add_child(rock)
 		rock.position.y = 15
 		# var v = vertices[float(resolution) / 2][float(resolution) / 2]

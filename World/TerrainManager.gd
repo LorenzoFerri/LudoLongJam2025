@@ -142,6 +142,7 @@ func _ready() -> void:
 	_setup_noise()
 	_setup_threading()
 	_initial_chunk_load()
+	seed(noise_seed)
 
 func _setup_noise() -> void:
 	# Layer 1 - Terrain di base

@@ -1,6 +1,7 @@
 extends SpringArm3D
 
-@export var CAMERA_SENSITIVITY := 10
+@export var CAMERA_SENSITIVITY := 100
+@export var MOUSE_SENSITIVITY := 10
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -11,5 +12,5 @@ func _process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		rotation_degrees.x = clamp(rotation_degrees.x - event.relative.y * CAMERA_SENSITIVITY * 0.01, -90, -10)
-		rotation_degrees.y -= event.relative.x * CAMERA_SENSITIVITY * 0.01
+		rotation_degrees.x = clamp(rotation_degrees.x - event.relative.y * MOUSE_SENSITIVITY * 0.01, -90, -10)
+		rotation_degrees.y -= event.relative.x * MOUSE_SENSITIVITY * 0.01

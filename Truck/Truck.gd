@@ -24,5 +24,7 @@ func _process(delta: float) -> void:
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
 		if direction == 0: brake = 2
+	else:
+		freeze = true
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5

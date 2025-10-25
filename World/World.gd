@@ -8,6 +8,7 @@ extends Node3D
 var players_loaded: int = 0
 
 func _ready() -> void:
+	truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 	MultiplayerManager.player_loaded.connect(_on_player_loaded)
 	MultiplayerManager.scene_loaded.rpc()
 
@@ -18,7 +19,6 @@ func _on_player_loaded() -> void:
 			start_game()
 
 func start_game() -> void:
-	truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 	for i in range(10):
 		var zombie_instance = zombie_scene.instantiate()
 		zombie_instance.target_path = truck.get_path()

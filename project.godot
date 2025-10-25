@@ -11,8 +11,12 @@ config_version=5
 [application]
 
 config/name="LudoLongJam2025"
-run/main_scene="uid://bow45h53alwmo"
+run/main_scene="uid://cnmis75qtv8vm"
 config/features=PackedStringArray("4.5", "Forward Plus")
+
+[autoload]
+
+MultiplayerManager="*res://Multiplayer/MultiplayerManager.gd"
 
 [editor]
 

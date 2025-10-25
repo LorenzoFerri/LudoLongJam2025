@@ -1,0 +1,124 @@
+[gd_scene load_steps=2 format=3 uid="uid://bii2ccikfyc4c"]
+
+[ext_resource type="Script" uid="uid://gfg0d6f8lu6y" path="res://Menu/Lobby.gd" id="1_lxjhg"]
+
+[node name="Lobby" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+script = ExtResource("1_lxjhg")
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Container"]
+layout_mode = 1
+offset_right = 45.0
+offset_bottom = 31.0
+text = "Back"
+
+[node name="StartButton" type="Button" parent="Container"]
+custom_minimum_size = Vector2(800, 100)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -100.0
+offset_right = 400.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Start"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container"]
+custom_minimum_size = Vector2(800, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -150.0
+offset_right = 400.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 32
+
+[node name="DrivingButton" type="Button" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Container/HBoxContainer/DrivingButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/HBoxContainer/DrivingButton/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/HBoxContainer/DrivingButton/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Driving"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Container/HBoxContainer/DrivingButton/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DriverContainer" type="VBoxContainer" parent="Container/HBoxContainer/DrivingButton/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="Container/HBoxContainer"]
+layout_mode = 2
+
+[node name="ShootingButton" type="Button" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Container/HBoxContainer/ShootingButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/HBoxContainer/ShootingButton/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/HBoxContainer/ShootingButton/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Shooting"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Container/HBoxContainer/ShootingButton/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShooterContainer" type="VBoxContainer" parent="Container/HBoxContainer/ShootingButton/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="pressed" from="Container/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="Container/HBoxContainer/DrivingButton" to="." method="_on_driving_button_pressed"]
+[connection signal="pressed" from="Container/HBoxContainer/ShootingButton" to="." method="_on_shooting_button_pressed"]

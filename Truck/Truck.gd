@@ -10,10 +10,16 @@ extends VehicleBody3D
 @onready var camera_arm: SpringArm3D = $CameraArm
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
+func _ready() -> void:
+	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
+		freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+		freeze = true
+
 func _process(delta: float) -> void:
 	camera_arm.position = position + Vector3.UP * 2
 	var RPM_left = abs(rear_left_wheel.get_rpm())
 	var RPM_right = abs(rear_right_wheel.get_rpm())
+	
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
 		var direction =  Input.get_action_strength("brake") - Input.get_action_strength("accelerate")
 		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
@@ -24,7 +30,5 @@ func _process(delta: float) -> void:
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
 		if direction == 0: brake = 2
-	else:
-		freeze = true
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5

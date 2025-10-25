@@ -604,6 +604,12 @@ properties/6/replication_mode = 1
 properties/7/path = NodePath("RearLeftWheel:rotation")
 properties/7/spawn = true
 properties/7/replication_mode = 1
+properties/8/path = NodePath(".:linear_velocity")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath(".:angular_velocity")
+properties/9/spawn = true
+properties/9/replication_mode = 1
 
 [node name="Truck" type="VehicleBody3D"]
 mass = 240.0

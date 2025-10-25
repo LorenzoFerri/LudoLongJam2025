@@ -9,6 +9,7 @@ var players: Dictionary[int, Role] = {}
 const PORT = 42069
 
 signal players_changed
+signal player_loaded(id: int)
 
 var upnp: UPNP = UPNP.new()
 
@@ -53,3 +54,14 @@ func join_game(ip_address: String = "127.0.0.1") -> bool:
 func set_player_role(id: int, role: Role) -> void:
 	players[id] = role
 	players_changed.emit()
+
+
+@rpc("call_local")
+func change_scene(scene_path: String) -> void:
+	get_tree().change_scene_to_file(scene_path)
+
+@rpc("any_peer", "call_local")
+func scene_loaded() -> void:
+	if multiplayer.is_server():
+		player_loaded.emit(multiplayer.get_remote_sender_id())
+	

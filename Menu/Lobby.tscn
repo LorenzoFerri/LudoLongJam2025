@@ -24,6 +24,7 @@ offset_bottom = 31.0
 text = "Back"
 
 [node name="StartButton" type="Button" parent="Container"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(800, 100)
 layout_mode = 1
 anchors_preset = 7
@@ -36,6 +37,7 @@ offset_top = -100.0
 offset_right = 400.0
 grow_horizontal = 2
 grow_vertical = 0
+disabled = true
 text = "Start"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Container"]

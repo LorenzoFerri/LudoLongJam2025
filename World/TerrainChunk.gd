@@ -34,7 +34,7 @@ func _init() -> void:
 	collision_shape = CollisionShape3D.new()
 	add_child(collision_shape)
 
-func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material: Material = null, height_calculator: Callable = Callable(), chunk_pos: Vector2i = Vector2i.ZERO) -> void:
+func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material: Material = null, height_calculator: Callable = Callable(), chunk_pos: Vector2i = Vector2i.ZERO, world_seed: int = 0) -> void:
 	_heightmap = heightmap
 	var surface_tool := SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -42,6 +42,11 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 	var step := float(chunk_size) / float(resolution)
 	var world_x := chunk_pos.x * chunk_size
 	var world_z := chunk_pos.y * chunk_size
+	
+	# Crea un seed deterministico basato sulla posizione del chunk e sul seed del mondo
+	var chunk_seed := hash(Vector2i(chunk_pos.x, chunk_pos.y)) ^ world_seed
+	var rng := RandomNumberGenerator.new()
+	rng.seed = chunk_seed
 
 	# Precalcola i vertici, calcolando le altezze anche oltre i bordi usando il noise
 	# Espandi la griglia di 1 vertice in ogni direzione per calcolare le normali ai bordi
@@ -151,8 +156,9 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 		default_material.albedo_color = Color(0.3, 0.6, 0.3)
 		mesh_instance.material_override = default_material
 	
-	if randi_range(0, 18) == 0:
-		var rock: StaticBody3D = rocks_scenes.pick_random().instantiate()
+	# Genera rocce in modo deterministico basato sul seed del chunk
+	if rng.randi_range(0, 18) == 0:
+		var rock: StaticBody3D = rocks_scenes[rng.randi_range(0, rocks_scenes.size() - 1)].instantiate()
 		add_child(rock)
 		rock.position.y = 15
 		# var v = vertices[float(resolution) / 2][float(resolution) / 2]
@@ -160,7 +166,7 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 		# var norm = normals[float(resolution) / 2][float(resolution) / 2]
 		# rock.look_at_from_position(rock.position, rock.position + norm, Vector3.FORWARD)
 		# rock.rotate(Vector3.RIGHT, deg_to_rad(90))
-		# rock.rotate(norm, deg_to_rad(randi_range(0, 360)))
+		# rock.rotate(norm, deg_to_rad(rng.randi_range(0, 360)))
 	
 	# Crea collisione
 	_create_collision(vertices, chunk_size, resolution)

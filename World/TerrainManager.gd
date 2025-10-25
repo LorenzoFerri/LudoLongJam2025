@@ -306,8 +306,8 @@ func _create_chunk_mesh(chunk_data: Dictionary) -> void:
 	chunk.name = "Chunk_%d_%d" % [chunk_pos.x, chunk_pos.y]
 	chunk.position = Vector3(chunk_pos.x * chunk_size, 0, chunk_pos.y * chunk_size)
 	
-	# Genera la mesh passando la funzione per calcolare le altezze
-	chunk.generate_mesh(heightmap, chunk_size, resolution, chunk_material, _calculate_height, chunk_pos)
+	# Genera la mesh passando la funzione per calcolare le altezze e il seed
+	chunk.generate_mesh(heightmap, chunk_size, resolution, chunk_material, _calculate_height, chunk_pos, noise_seed)
 	
 	# Aggiungi alla scena
 	add_child(chunk)
@@ -364,8 +364,8 @@ func _create_preview_chunk(chunk_data: Dictionary) -> void:
 	chunk.name = "PreviewChunk_%d_%d" % [chunk_pos.x, chunk_pos.y]
 	chunk.position = Vector3(chunk_pos.x * chunk_size, 0, chunk_pos.y * chunk_size)
 	
-	# Genera la mesh passando la funzione per calcolare le altezze
-	chunk.generate_mesh(heightmap, chunk_size, resolution, chunk_material, _calculate_height, chunk_pos)
+	# Genera la mesh passando la funzione per calcolare le altezze e il seed
+	chunk.generate_mesh(heightmap, chunk_size, resolution, chunk_material, _calculate_height, chunk_pos, noise_seed)
 	
 	add_child(chunk)
 	

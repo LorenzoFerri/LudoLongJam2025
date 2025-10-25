@@ -85,3 +85,10 @@ layer3_scale = 0.1
 layer3_amplitude = 1.0
 preview_chunks_x = 16
 preview_chunks_z = 16
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://cjyer75whv2sk")
+spawn_path = NodePath("../Zombies")
+
+[node name="Zombies" type="Node3D" parent="."]
+unique_name_in_owner = true

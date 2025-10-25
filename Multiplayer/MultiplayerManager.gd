@@ -9,7 +9,7 @@ var players: Dictionary[int, Role] = {}
 const PORT = 42069
 
 signal players_changed
-signal player_loaded(id: int)
+signal player_loaded()
 
 var upnp: UPNP = UPNP.new()
 
@@ -63,5 +63,10 @@ func change_scene(scene_path: String) -> void:
 @rpc("any_peer", "call_local")
 func scene_loaded() -> void:
 	if multiplayer.is_server():
-		player_loaded.emit(multiplayer.get_remote_sender_id())
+		player_loaded.emit()
 	
+func get_driver_id() -> int:
+	for id in players.keys():
+		if players[id] == Role.DRIVER:
+			return id
+	return -1

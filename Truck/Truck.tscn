@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=4 uid="uid://bdylrsie22fbj"]
+[gd_scene load_steps=48 format=4 uid="uid://bdylrsie22fbj"]
 
 [ext_resource type="Script" uid="uid://cb1d68tv6df13" path="res://Truck/Truck.gd" id="1_wasro"]
 [ext_resource type="Material" uid="uid://bn4catggyg8nl" path="res://Assets/Truck/Material.tres" id="2_wasro"]
@@ -579,6 +579,32 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_yqpj0")
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ccxdk"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:steering")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:engine_force")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath("FrontRightWheel:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath("FrontLeftWheel:rotation")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("RearRightWheel:rotation")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath("RearLeftWheel:rotation")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+
 [node name="Truck" type="VehicleBody3D"]
 mass = 240.0
 center_of_mass_mode = 1
@@ -645,14 +671,14 @@ skeleton = NodePath("")
 
 [node name="RearLeftGPUParticles" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65415454, 0.0571492, 1.0535258)
-visible = false
+emitting = false
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_2oony")
 draw_pass_1 = SubResource("QuadMesh_ccxdk")
 
 [node name="RearRightGPUParticles" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7006228, 0.0571492, 1.0535258)
-visible = false
+emitting = false
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_2oony")
 draw_pass_1 = SubResource("QuadMesh_ccxdk")
@@ -755,3 +781,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.033553567, 0.1883971, -6.63
 mesh = SubResource("ArrayMesh_hxrli")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_6sx4s")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ccxdk")

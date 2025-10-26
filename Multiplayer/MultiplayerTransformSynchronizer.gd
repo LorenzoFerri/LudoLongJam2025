@@ -44,27 +44,38 @@ func _process(_delta: float) -> void:
 		while transform_state_buffer.size() > 2 and render_time > transform_state_buffer[1].snap_time_ms:
 			transform_state_buffer.remove_at(0)
 			
-		var interpolation_factor := float(render_time - transform_state_buffer[0].snap_time_ms) / float(transform_state_buffer[1].snap_time_ms - transform_state_buffer[0].snap_time_ms)
+		# Prevenire divisione per zero
+		var time_diff: int = transform_state_buffer[1].snap_time_ms - transform_state_buffer[0].snap_time_ms
+		if time_diff <= 0:
+			return
+			
+		var interpolation_factor := float(render_time - transform_state_buffer[0].snap_time_ms) / float(time_diff)
 		
 		if transform_state_buffer[1].sleep_mode == true:
-			if sync_global_transform:
+			if sync_global_transform and is_transform_valid(transform_state_buffer[1].global_transform):
 				track_this_object.global_transform = transform_state_buffer[1].global_transform
-			if sync_quaternion:
+			if sync_quaternion and is_quaternion_valid(transform_state_buffer[1].quaternion):
 				track_this_object.quaternion = transform_state_buffer[1].quaternion
-			if sync_scale:
+			if sync_scale and is_vector3_valid(transform_state_buffer[1].scale):
 				track_this_object.scale = transform_state_buffer[1].scale
 			transform_state_buffer[1].snap_time_ms = render_time
 			return
 		
 		recalculate_interpolation_offset_ms(interpolation_factor)
 		
+		# Interpolare solo se i valori sono validi
 		if sync_global_transform:
-			# track_this_object.global_transform = lerp(transform_state_buffer[0].global_transform, transform_state_buffer[1].global_transform, interpolation_factor)
-			track_this_object.global_transform = transform_state_buffer[0].global_transform.interpolate_with(transform_state_buffer[1].global_transform, interpolation_factor)
+			var interpolated_transform = transform_state_buffer[0].global_transform.interpolate_with(transform_state_buffer[1].global_transform, interpolation_factor)
+			if is_transform_valid(interpolated_transform):
+				track_this_object.global_transform = interpolated_transform
 		if sync_quaternion:
-			track_this_object.quaternion = lerp(transform_state_buffer[0].quaternion, transform_state_buffer[1].quaternion, interpolation_factor)
+			var interpolated_quaternion = lerp(transform_state_buffer[0].quaternion, transform_state_buffer[1].quaternion, interpolation_factor)
+			if is_quaternion_valid(interpolated_quaternion):
+				track_this_object.quaternion = interpolated_quaternion
 		if sync_scale:
-			track_this_object.scale = lerp(transform_state_buffer[0].scale, transform_state_buffer[1].scale, interpolation_factor)
+			var interpolated_scale = lerp(transform_state_buffer[0].scale, transform_state_buffer[1].scale, interpolation_factor)
+			if is_vector3_valid(interpolated_scale):
+				track_this_object.scale = interpolated_scale
 		
 func recalculate_interpolation_offset_ms(interpolation_factor: float):
 	if interpolation_factor > 1 && interpolation_offset_ms < interpolation_offset_max:
@@ -100,10 +111,22 @@ func sync_transform() -> void:
 	
 	sleep_mode_information_delivered = false
 	
+	# Validare i valori prima di inviarli
+	var transform_to_send = track_this_object.global_transform if sync_global_transform else Transform3D()
+	var quaternion_to_send = track_this_object.quaternion if sync_quaternion else Quaternion()
+	var scale_to_send = track_this_object.scale if sync_scale else Vector3()
+	
+	# Non inviare se i valori non sono validi
+	if (sync_global_transform and not is_transform_valid(transform_to_send)) or \
+	   (sync_quaternion and not is_quaternion_valid(quaternion_to_send)) or \
+	   (sync_scale and not is_vector3_valid(scale_to_send)):
+		print("Warning: Attempting to sync invalid transform values")
+		return
+	
 	_sync_transform.rpc(
-		track_this_object.global_transform if sync_global_transform else Transform3D(),
-		track_this_object.quaternion if sync_quaternion else Quaternion(),
-		track_this_object.scale if sync_scale else Vector3(),
+		transform_to_send,
+		quaternion_to_send,
+		scale_to_send,
 		get_current_unix_time_ms(),
 		sleep_mode
 	)
@@ -133,11 +156,11 @@ func _sync_transform(new_global_transform: Transform3D, new_quaternion: Quaterni
 
 @rpc("authority", "call_remote", "reliable")
 func _respone_transform(new_global_transform: Transform3D, new_quaternion: Quaternion, new_scale: Vector3) -> void:
-	if sync_global_transform:
+	if sync_global_transform and is_transform_valid(new_global_transform):
 		track_this_object.global_transform = new_global_transform
-	if sync_quaternion:
+	if sync_quaternion and is_quaternion_valid(new_quaternion):
 		track_this_object.quaternion = new_quaternion
-	if sync_scale:
+	if sync_scale and is_vector3_valid(new_scale):
 		track_this_object.scale = new_scale
 	
 @rpc("any_peer", "call_remote", "reliable")
@@ -148,3 +171,13 @@ func _request_transform() -> void:
 			track_this_object.quaternion if sync_quaternion else Quaternion(),
 			track_this_object.scale if sync_scale else Vector3()
 		)
+
+# Funzioni di validazione per prevenire valori non finiti
+func is_transform_valid(transform: Transform3D) -> bool:
+	return is_vector3_valid(transform.origin) and is_vector3_valid(transform.basis.x) and is_vector3_valid(transform.basis.y) and is_vector3_valid(transform.basis.z)
+
+func is_quaternion_valid(quat: Quaternion) -> bool:
+	return is_finite(quat.x) and is_finite(quat.y) and is_finite(quat.z) and is_finite(quat.w)
+
+func is_vector3_valid(vec: Vector3) -> bool:
+	return is_finite(vec.x) and is_finite(vec.y) and is_finite(vec.z)

@@ -10,12 +10,22 @@ extends VehicleBody3D
 @onready var camera_arm: SpringArm3D = $CameraArm
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
-@export var network_transform: Transform3D
+var last_position_update: int = 0
+var average_position_update_ms: int = 20
+
+@export var network_transform: Transform3D:
+	set(value):
+		network_transform = value
+		var last_position_time = Time.get_ticks_msec() - last_position_update
+		last_position_update = Time.get_ticks_msec()
+		average_position_update_ms = int(float(average_position_update_ms + last_position_time) / 2)
+
 @export var network_quaternion: Quaternion
+var interpolation_time: float = 0.0
+
 
 func _ready() -> void:
 	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
-		# freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 		freeze = true
 
 func _process(delta: float) -> void:
@@ -36,9 +46,10 @@ func _process(delta: float) -> void:
 		network_transform = global_transform
 		network_quaternion = quaternion
 	else:
-		# global_transform = network_transform
-		# quaternion = network_quaternion
-		global_transform = global_transform.interpolate_with(network_transform, 0.1)
-		quaternion = quaternion.slerp(network_quaternion, 0.1)
+		interpolation_time += delta
+		if interpolation_time * 1000 >= average_position_update_ms:
+			interpolation_time = 0.0
+		global_transform = global_transform.interpolate_with(network_transform, interpolation_time / (average_position_update_ms / 1000.0))
+		quaternion = quaternion.slerp(network_quaternion, interpolation_time / (average_position_update_ms / 1000.0))
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5

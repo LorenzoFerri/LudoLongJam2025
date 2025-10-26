@@ -69,6 +69,10 @@ camera_down={
 ]
 }
 
+[physics]
+
+common/physics_interpolation=true
+
 [rendering]
 
 environment/volumetric_fog/volume_size=128

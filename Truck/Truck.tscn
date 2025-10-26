@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://8f5088rurkrt" path="res://Truck/Camera.gd" id="3_2oony"]
 [ext_resource type="Texture2D" uid="uid://ct3nsw6afbw1s" path="res://World/Texture/—Pngtree—sand cloud realistic texture_6688638.png" id="3_lh4vc"]
 [ext_resource type="Texture2D" uid="uid://bwjt7gs87cf8i" path="res://Assets/Weapon/textures/Tex_1130.png" id="5_ccxdk"]
-[ext_resource type="Script" uid="uid://cef8khu7d705h" path="res://Multiplayer/MultiplayerTransformSynchronizer.gd" id="6_6sx4s"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vcd85"]
 _surfaces = [{
@@ -580,9 +579,27 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_yqpj0")
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ccxdk"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:steering")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:engine_force")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:brake")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
 [node name="Truck" type="VehicleBody3D"]
 mass = 240.0
 center_of_mass_mode = 1
+freeze_mode = 1
 script = ExtResource("1_wasro")
 TURN_AMOUNT = 0.6
 
@@ -757,8 +774,5 @@ mesh = SubResource("ArrayMesh_hxrli")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_6sx4s")
 
-[node name="MultiplayerTransformSynchronizer" type="Node" parent="." node_paths=PackedStringArray("track_this_object")]
-script = ExtResource("6_6sx4s")
-track_this_object = NodePath("..")
-sync_quaternion = false
-sync_scale = false
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ccxdk")

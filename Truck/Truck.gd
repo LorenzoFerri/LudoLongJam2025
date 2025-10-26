@@ -11,9 +11,9 @@ extends VehicleBody3D
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
 
-func _ready() -> void:
-	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
-		freeze = true
+# func _ready() -> void:
+# 	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
+# 		freeze = true
 
 func _process(delta: float) -> void:
 	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)

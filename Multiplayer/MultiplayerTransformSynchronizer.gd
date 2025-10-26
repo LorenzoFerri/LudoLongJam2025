@@ -18,15 +18,21 @@ extends Node
 ## Maximum threshold for interpolation_offset_ms (500 - quite enough even for a very lagging server)
 @export_range(20, 500) var interpolation_offset_max := 500
 
+@export_group("Sync Settings")
+## Number of syncs per second (higher = smoother but more bandwidth)
+@export_range(10, 60) var sync_rate_hz := 30
+
 var sleep_mode := false;
 var sleep_mode_information_delivered := false
+var last_sync_time := 0.0  # Tempo dell'ultima sincronizzazione
 
 var old_global_transform = Transform3D();
 var old_quaternion = Quaternion();
 var old_scale = Vector3();
 
 var transform_state_buffer = [] # [old_State (0), future_state (1)] - buffer for interpolation, stores old and new data
-var interpolation_offset_ms := 100 # The current time in milliseconds, which the game is interpolated (depends on the speed of receiving data from the server and on the server load) this is necessary for smooth movement, and this value is changed by the algorithm depending on the speed of receiving data from the server and on its load
+var interpolation_offset_ms := 100.0 # The current time in milliseconds, which the game is interpolated (depends on the speed of receiving data from the server and on the server load) this is necessary for smooth movement, and this value is changed by the algorithm depending on the speed of receiving data from the server and on its load
+var buffer_size_samples = [] # Track buffer size over time for adaptive interpolation
 
 func _ready() -> void:
 	if track_this_object == null:
@@ -51,6 +57,9 @@ func _process(_delta: float) -> void:
 			
 		var interpolation_factor := float(render_time - transform_state_buffer[0].snap_time_ms) / float(time_diff)
 		
+		# Clamp l'interpolation factor per evitare estrapolazioni eccessive
+		interpolation_factor = clamp(interpolation_factor, 0.0, 1.2)
+		
 		if transform_state_buffer[1].sleep_mode == true:
 			if sync_global_transform and is_transform_valid(transform_state_buffer[1].global_transform):
 				track_this_object.global_transform = transform_state_buffer[1].global_transform
@@ -69,27 +78,53 @@ func _process(_delta: float) -> void:
 			if is_transform_valid(interpolated_transform):
 				track_this_object.global_transform = interpolated_transform
 		if sync_quaternion:
-			var interpolated_quaternion = lerp(transform_state_buffer[0].quaternion, transform_state_buffer[1].quaternion, interpolation_factor)
+			var interpolated_quaternion = transform_state_buffer[0].quaternion.slerp(transform_state_buffer[1].quaternion, interpolation_factor)
 			if is_quaternion_valid(interpolated_quaternion):
 				track_this_object.quaternion = interpolated_quaternion
 		if sync_scale:
 			var interpolated_scale = lerp(transform_state_buffer[0].scale, transform_state_buffer[1].scale, interpolation_factor)
 			if is_vector3_valid(interpolated_scale):
 				track_this_object.scale = interpolated_scale
+	elif transform_state_buffer.size() == 1:
+		# Se abbiamo solo un campione, usalo direttamente
+		if sync_global_transform and is_transform_valid(transform_state_buffer[0].global_transform):
+			track_this_object.global_transform = transform_state_buffer[0].global_transform
+		if sync_quaternion and is_quaternion_valid(transform_state_buffer[0].quaternion):
+			track_this_object.quaternion = transform_state_buffer[0].quaternion
+		if sync_scale and is_vector3_valid(transform_state_buffer[0].scale):
+			track_this_object.scale = transform_state_buffer[0].scale
 		
 func recalculate_interpolation_offset_ms(interpolation_factor: float):
-	if interpolation_factor > 1 && interpolation_offset_ms < interpolation_offset_max:
+	# Algoritmo più fluido e meno aggressivo per l'interpolazione
+	buffer_size_samples.append(transform_state_buffer.size())
+	if buffer_size_samples.size() > 30:  # Mantieni solo gli ultimi 30 campioni (circa 0.5 secondi a 60fps)
+		buffer_size_samples.pop_front()
+	
+	# Se stiamo interpolando troppo avanti (factor > 1), aumenta l'offset
+	if interpolation_factor > 1.0:
+		if interpolation_offset_ms < interpolation_offset_max:
+			# Aumenta più velocemente se siamo molto avanti
+			var increment = 2 if interpolation_factor > 1.5 else 1
+			interpolation_offset_ms += increment
+	# Se abbiamo un buon buffer e siamo indietro, diminuisci l'offset
+	elif interpolation_factor < 0.9 and transform_state_buffer.size() > 3:
+		if interpolation_offset_ms > interpolation_offset_min:
+			# Diminuisci lentamente per evitare jitter
+			interpolation_offset_ms -= 0.5
+	# Mantieni un buffer minimo
+	elif transform_state_buffer.size() < 2 and interpolation_offset_ms < interpolation_offset_max:
 		interpolation_offset_ms += 1
-	else:
-		if transform_state_buffer.size() > 2 && interpolation_offset_ms > interpolation_offset_min:
-			interpolation_offset_ms -= 1
 
 func get_current_unix_time_ms() -> int:
 	return int(Time.get_unix_time_from_system() * 1000)
 
 func _physics_process(_delta: float) -> void:
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
-		sync_transform()
+		# Throttle basato sul tempo invece che sul frame rate
+		var current_time = Time.get_ticks_msec() / 1000.0
+		if current_time - last_sync_time >= (1.0 / sync_rate_hz):
+			sync_transform()
+			last_sync_time = current_time
 
 func sync_transform() -> void:
 	var at_least_one_has_been_changed := false

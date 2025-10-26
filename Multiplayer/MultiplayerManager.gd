@@ -31,6 +31,8 @@ func host_game() -> bool:
 		return false
 	if upnp.add_port_mapping(PORT, PORT, "LudoLongGameJam2025", "UDP") != OK:
 		return false
+	if upnp.add_port_mapping(PORT, PORT, "LudoLongGameJam2025", "TCP") != OK:
+		return false
 	var peer = ENetMultiplayerPeer.new()
 	if peer.create_server(PORT, 2) != OK:
 		return false

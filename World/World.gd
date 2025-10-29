@@ -8,7 +8,7 @@ extends Node3D
 var players_loaded: int = 0
 
 func _ready() -> void:
-	truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
+	# truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 	MultiplayerManager.player_loaded.connect(_on_player_loaded)
 	MultiplayerManager.scene_loaded.rpc()
 

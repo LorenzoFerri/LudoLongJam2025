@@ -8,12 +8,22 @@ extends VehicleBody3D
 @onready var rear_left_wheel: VehicleWheel3D = $RearLeftWheel
 @onready var rear_right_wheel: VehicleWheel3D = $RearRightWheel
 @onready var camera_arm: SpringArm3D = $CameraArm
+@onready var camera : Camera3D = $CameraArm/Camera3D
+@onready var weapon: Node3D = $Weapon
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
 
-# func _ready() -> void:
-# 	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
-# 		freeze = true
+func _ready() -> void:
+	MultiplayerManager.players_changed.connect(_on_players_changed)
+	_on_players_changed()
+
+func _on_players_changed() -> void:
+	for player_id in MultiplayerManager.players.keys():
+		if MultiplayerManager.players[player_id] == MultiplayerManager.Role.DRIVER:
+			set_multiplayer_authority(player_id)
+		else:
+			weapon.set_multiplayer_authority(player_id)
+
 
 func _process(delta: float) -> void:
 	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
@@ -21,6 +31,7 @@ func _process(delta: float) -> void:
 	var RPM_right = abs(rear_right_wheel.get_rpm())
 	
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
+		camera.current = true
 		var direction =  Input.get_action_strength("brake") - Input.get_action_strength("accelerate")
 		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
 

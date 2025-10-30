@@ -7,6 +7,8 @@ extends Node3D
 
 var players_loaded: int = 0
 
+var goals: Array[Goal] = []
+
 func _ready() -> void:
 	# truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 	MultiplayerManager.player_loaded.connect(_on_player_loaded)
@@ -17,8 +19,12 @@ func _on_player_loaded() -> void:
 		players_loaded += 1
 		if players_loaded >= MultiplayerManager.players.size():
 			start_game()
+			if players_loaded == 1:
+				MultiplayerManager.set_player_role(1, MultiplayerManager.Role.DRIVER)
+				truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 
 func start_game() -> void:
+	set_next_goal(goals[0])
 	for i in range(10):
 		var zombie_instance = zombie_scene.instantiate()
 		zombie_instance.target_path = truck.get_path()
@@ -28,3 +34,22 @@ func start_game() -> void:
 			0,
 			randf_range(-5, 5)
 		) + marker.position
+
+
+############## GOALS
+func add_goal(goal: Goal):
+	goals.push_back(goal)
+
+func goal_reached():
+	goals.pop_front()
+	
+	if goals.size() != 0:
+		set_next_goal(goals[0])
+	# else fine livello?
+
+func set_next_goal(goal: Goal):
+	goal.can_be_reached = true
+	goal.goal_reached.connect(goal_reached)
+	
+	if truck:
+		truck.next_goal = goal

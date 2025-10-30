@@ -1,5 +1,7 @@
 extends VehicleBody3D
 
+class_name Truck
+
 @export var MAX_RPM := 450
 @export var MAX_TORQUE := 300
 @export var TURN_SPEED := 3
@@ -12,6 +14,9 @@ extends VehicleBody3D
 @onready var weapon: Node3D = $Weapon
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
+@onready var goal_arrow: MeshInstance3D = %GoalArrow
+
+var next_goal: Goal = null
 
 func _ready() -> void:
 	MultiplayerManager.players_changed.connect(_on_players_changed)
@@ -41,5 +46,31 @@ func _process(delta: float) -> void:
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
 		if direction == 0: brake = 2
+		
+		# goal arrow
+		if next_goal != null:
+			# Direction from car to goal, in world space
+			var dir_world = (next_goal.global_position - global_position)
+			dir_world.y = 0  # Ignore vertical difference
+
+			if dir_world.length() == 0:
+				return
+			dir_world = dir_world.normalized()
+
+			# Convert direction into the car’s local space
+			var dir_local = global_transform.basis.inverse() * dir_world
+
+			# Compute the yaw angle (rotation around Y)
+			var target_yaw = atan2(dir_local.x, dir_local.z)
+
+			# Rotate the arrow (in local space)
+			goal_arrow.rotation.y = target_yaw
+			
+			goal_arrow.visible = true
+			
+	else:
+		# da decidere
+		goal_arrow.visible = false
+		
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5

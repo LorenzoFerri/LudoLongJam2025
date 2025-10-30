@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://bdylrsie22fbj"]
+[gd_scene load_steps=41 format=4 uid="uid://bdylrsie22fbj"]
 
 [ext_resource type="Script" uid="uid://cb1d68tv6df13" path="res://Truck/Truck.gd" id="1_wasro"]
 [ext_resource type="Material" uid="uid://bn4catggyg8nl" path="res://Assets/Truck/Material.tres" id="2_wasro"]
@@ -487,6 +487,10 @@ properties/4/path = NodePath(".:brake")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
+[sub_resource type="PrismMesh" id="PrismMesh_ccxdk"]
+lightmap_size_hint = Vector2i(8, 19)
+size = Vector3(0.7, 1.2, 0.2)
+
 [node name="Truck" type="VehicleBody3D"]
 mass = 240.0
 center_of_mass_mode = 1
@@ -653,3 +657,11 @@ transform = Transform3D(-0.49499997, 0, -7.474292e-08, 0, 0.49499997, 0, 7.47429
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ccxdk")
+
+[node name="Compass" type="Node3D" parent="."]
+
+[node name="GoalArrow" type="MeshInstance3D" parent="Compass"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 1.509958e-07, -6.600236e-15, 0, -4.371139e-08, -1, -1.509958e-07, -1, 4.371139e-08, 0, 0.6641469, -4.369777)
+mesh = SubResource("PrismMesh_ccxdk")
+skeleton = NodePath("../..")

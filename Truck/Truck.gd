@@ -75,3 +75,10 @@ func _process(delta: float) -> void:
 		
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5
+
+	if Input.is_action_just_pressed("switch_roles"):
+		for player_id in MultiplayerManager.players.keys():
+			if MultiplayerManager.players[player_id] == MultiplayerManager.Role.DRIVER:
+				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.SHOOTER)
+			else:
+				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.DRIVER)

@@ -23,11 +23,7 @@ func _ready() -> void:
 	_on_players_changed()
 
 func _on_players_changed() -> void:
-	for player_id in MultiplayerManager.players.keys():
-		if MultiplayerManager.players[player_id] == MultiplayerManager.Role.DRIVER:
-			set_multiplayer_authority(player_id)
-		else:
-			weapon.set_multiplayer_authority(player_id)
+	set_multiplayer_authority(MultiplayerManager.get_driver_id())
 
 
 func _process(delta: float) -> void:

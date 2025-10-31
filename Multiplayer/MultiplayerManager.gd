@@ -72,3 +72,9 @@ func get_driver_id() -> int:
 		if players[id] == Role.DRIVER:
 			return id
 	return -1
+
+func get_shooter_id() -> int:
+	for id in players.keys():
+		if players[id] == Role.SHOOTER:
+			return id
+	return -1

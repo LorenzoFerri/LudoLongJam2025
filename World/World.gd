@@ -21,7 +21,6 @@ func _on_player_loaded() -> void:
 			start_game()
 			if players_loaded == 1:
 				MultiplayerManager.set_player_role(1, MultiplayerManager.Role.DRIVER)
-				truck.set_multiplayer_authority(MultiplayerManager.get_driver_id())
 
 func start_game() -> void:
 	set_next_goal(goals[0])

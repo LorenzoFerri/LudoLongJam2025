@@ -6,12 +6,17 @@ extends Node3D
 @onready var camera : Camera3D = %Camera3D
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	MultiplayerManager.players_changed.connect(_on_players_changed)
+	_on_players_changed()
+
+func _on_players_changed() -> void:
+	set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id(): return
+	print(multiplayer.get_unique_id())
+	if multiplayer.get_unique_id() != MultiplayerManager.get_shooter_id(): return
 	camera.current = true
 	# camera.position = camera.position.move_toward(global_position + Vector3.UP, delta * 100)
 	var horizontal_input = Input.get_action_strength("camera_left") - Input.get_action_strength("camera_right")
@@ -20,7 +25,7 @@ func _process(delta: float) -> void:
 	z_rotation_control.rotation_degrees.y += horizontal_input * 100 * delta
 
 func _input(event: InputEvent) -> void:
-	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id(): return
+	if multiplayer.get_unique_id() != MultiplayerManager.get_shooter_id(): return
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		x_rotation_control.rotation_degrees.x = clamp(x_rotation_control.rotation_degrees.x + event.relative.y * 0.1, -45, 45)
 		z_rotation_control.rotation_degrees.y -= event.relative.x * 0.1	

@@ -23,7 +23,7 @@ func _on_player_loaded() -> void:
 				MultiplayerManager.set_player_role(1, MultiplayerManager.Role.DRIVER)
 
 func start_game() -> void:
-	set_next_goal(goals[0])
+	set_next_goal.rpc(0)
 	for i in range(10):
 		var zombie_instance = zombie_scene.instantiate()
 		zombie_instance.target_path = truck.get_path()
@@ -43,10 +43,12 @@ func goal_reached():
 	goals.pop_front()
 	
 	if goals.size() != 0:
-		set_next_goal(goals[0])
+		set_next_goal(0)
 	# else fine livello?
 
-func set_next_goal(goal: Goal):
+@rpc("any_peer", "call_local", "reliable")
+func set_next_goal(goal_index: int):
+	var goal = goals[goal_index]
 	goal.can_be_reached = true
 	goal.goal_reached.connect(goal_reached)
 	

@@ -34,9 +34,9 @@ func _input(event: InputEvent) -> void:
 func shoot():
 	var bullet = bullet_scene.instantiate()
 	bullet.start_position = shooting_raycast.global_position
-	var target = x_rotation_control.global_transform * shooting_raycast.target_position
-	bullet.end_position = bullet.start_position + target
-	bullets_group.add_child(bullet)
+	var target = shooting_raycast.to_global(shooting_raycast.target_position)
+	bullet.end_position = target
+	bullets_group.add_child(bullet, true)
 	
 	if shooting_raycast.is_colliding():
 		var collider = shooting_raycast.get_collider()

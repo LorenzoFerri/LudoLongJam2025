@@ -1,9 +1,9 @@
 extends MeshInstance3D
 
-@export var speed: float = 20.0
+@export var speed: float = 100.0
 
-var start_position: Vector3 = Vector3.ZERO
-var end_position: Vector3
+@export var start_position: Vector3 = Vector3.ZERO
+@export var end_position: Vector3
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

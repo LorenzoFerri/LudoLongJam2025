@@ -147,7 +147,7 @@ fov = 50.0
 
 [node name="ShootingRaycast" type="RayCast3D" parent="Rotate_Z/Rotate_X"]
 unique_name_in_owner = true
-transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, -0.36737168, 0.1687926, -2.9802322e-08)
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.3673718, 0.1687926, 1.6324815)
 target_position = Vector3(0, 0, 200)
 
 [node name="Stand_1130" type="MeshInstance3D" parent="."]

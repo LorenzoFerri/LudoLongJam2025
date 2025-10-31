@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b7enve6r2hqmm" path="res://Weapon/Projectiles/bullet.gd" id="1_o63b0"]
 
 [sub_resource type="PrismMesh" id="PrismMesh_rcceh"]
-size = Vector3(0.05, 0.05, 0.3)
+size = Vector3(0.05, 0.05, 0.7)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_o63b0"]
 properties/0/path = NodePath(".:position")
@@ -12,6 +12,12 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:start_position")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:end_position")
+properties/3/spawn = true
+properties/3/replication_mode = 1
 
 [node name="Bullet" type="MeshInstance3D"]
 mesh = SubResource("PrismMesh_rcceh")

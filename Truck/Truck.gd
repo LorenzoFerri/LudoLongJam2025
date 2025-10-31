@@ -12,6 +12,7 @@ class_name Truck
 @onready var camera_arm: SpringArm3D = $CameraArm
 @onready var camera : Camera3D = $CameraArm/Camera3D
 @onready var weapon: Node3D = $Weapon
+@onready var weapon_position: Marker3D = $WeaponPosition
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
@@ -29,6 +30,9 @@ func _on_players_changed() -> void:
 
 func _process(delta: float) -> void:
 	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
+	weapon.position = weapon_position.global_position
+	weapon.rotation = weapon_position.global_rotation
+	weapon.rotate_object_local(Vector3.UP, -global_rotation.y)
 	var RPM_left = abs(rear_left_wheel.get_rpm())
 	var RPM_right = abs(rear_right_wheel.get_rpm())
 	

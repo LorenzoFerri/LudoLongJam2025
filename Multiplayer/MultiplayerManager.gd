@@ -19,7 +19,10 @@ func _ready() -> void:
 
 func _on_peer_connected(id: int) -> void:
 	print("Peer connected with ID: %d" % id)
-	set_player_role.rpc(id, Role.DRIVER if players.size() == 0 else Role.SHOOTER)
+	if multiplayer.is_server():
+		var my_role = players[multiplayer.get_unique_id()]
+		set_player_role.rpc(multiplayer.get_unique_id(), my_role)
+		set_player_role.rpc(id, Role.SHOOTER if my_role == Role.DRIVER else Role.DRIVER)
 
 func _on_peer_disconnected(id: int) -> void:
 	print("Peer disconnected with ID: %d" % id)

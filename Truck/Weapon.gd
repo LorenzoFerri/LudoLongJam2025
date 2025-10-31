@@ -15,7 +15,6 @@ func _on_players_changed() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	print(multiplayer.get_unique_id())
 	if multiplayer.get_unique_id() != MultiplayerManager.get_shooter_id(): return
 	camera.current = true
 	# camera.position = camera.position.move_toward(global_position + Vector3.UP, delta * 100)

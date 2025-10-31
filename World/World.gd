@@ -20,7 +20,7 @@ func _on_player_loaded() -> void:
 		if players_loaded >= MultiplayerManager.players.size():
 			start_game()
 			if players_loaded == 1:
-				MultiplayerManager.set_player_role(1, MultiplayerManager.Role.DRIVER)
+				MultiplayerManager.set_player_role(1, MultiplayerManager.Role.SHOOTER)
 
 func start_game() -> void:
 	set_next_goal.rpc(0)

@@ -124,6 +124,10 @@ properties/1/replication_mode = 1
 transform = Transform3D(-0.49499997, 0, -4.3274273e-08, 0, 0.49499997, 0, 4.3274273e-08, 0, -0.49499997, 0, 0, 0)
 script = ExtResource("1_1pcg8")
 
+[node name="Bullets" type="Node3D" parent="."]
+transform = Transform3D(-0.49499997, 0, -4.3274273e-08, 0, 0.49499997, 0, 4.3274273e-08, 0, -0.49499997, 0, 0, 0)
+top_level = true
+
 [node name="Rotate_Z" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03355333, 0.66090524, 0.01822662)
 mesh = SubResource("ArrayMesh_u2bay")
@@ -141,11 +145,24 @@ unique_name_in_owner = true
 transform = Transform3D(-2.0202022, -1.1855491e-08, 1.762133e-07, -1.07658e-14, 2.0156455, 0.13561091, -1.7661166e-07, 0.13561091, -2.0156455, -0.41043898, 1.7960943, -6.3436527)
 fov = 50.0
 
+[node name="ShootingRaycast" type="RayCast3D" parent="Rotate_Z/Rotate_X"]
+unique_name_in_owner = true
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, -0.36737168, 0.1687926, -2.9802322e-08)
+target_position = Vector3(0, 0, 200)
+
 [node name="Stand_1130" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.033553567, 0.1883971, -6.633159e-05)
 mesh = SubResource("ArrayMesh_hxrli")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_6sx4s")
 
+[node name="ShootingTimer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_1pcg8")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://7q7enridjcus")
+spawn_path = NodePath("../Bullets")

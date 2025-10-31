@@ -24,7 +24,6 @@ func build_containers() -> void:
 		elif role == MultiplayerManager.Role.SHOOTER:
 			shooter_container.add_child(label)
 	if MultiplayerManager.multiplayer.is_server():
-		print("Driver count: %d, Shooter count: %d" % [driver_container.get_child_count(), shooter_container.get_child_count()])
 		start_button.disabled = driver_container.get_child_count() != 1 || shooter_container.get_child_count() != 1
 	else:
 		start_button.disabled = true

@@ -24,6 +24,7 @@ func _ready() -> void:
 
 func _on_players_changed() -> void:
 	set_multiplayer_authority(MultiplayerManager.get_driver_id())
+	weapon.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 
 
 func _process(delta: float) -> void:

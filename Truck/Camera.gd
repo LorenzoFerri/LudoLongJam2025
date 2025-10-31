@@ -14,3 +14,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotation_degrees.x = clamp(rotation_degrees.x - event.relative.y * MOUSE_SENSITIVITY * 0.01, -90, -10)
 		rotation_degrees.y -= event.relative.x * MOUSE_SENSITIVITY * 0.01
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_ESCAPE:
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

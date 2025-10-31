@@ -1,6 +1,6 @@
-extends MeshInstance3D
+extends Node3D
 
-@export var speed: float = 100.0
+@export var speed: float = 300.0
 
 @export var start_position: Vector3 = Vector3.ZERO
 @export var end_position: Vector3

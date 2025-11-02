@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Weapon" load_steps=2 format=3 uid="uid://01hdyxiwy1qt"]
+
+[ext_resource type="Script" uid="uid://e6ttg8ifuxco" path="res://Weapon/Weapon.gd" id="1_wsg1m"]
+
+[resource]
+script = ExtResource("1_wsg1m")
+attack_cooldown = 0.15
+projectile_speed = 400
+metadata/_custom_type_script = "uid://e6ttg8ifuxco"

@@ -1,0 +1,96 @@
+[gd_scene load_steps=14 format=3 uid="uid://bow45h53alwmo"]
+
+[ext_resource type="PackedScene" uid="uid://bdylrsie22fbj" path="res://Scenes/Player/Truck/Truck.tscn" id="1_folwd"]
+[ext_resource type="Script" uid="uid://cv51dkhpyy8if" path="res://Scenes/World/World.gd" id="1_s53j1"]
+[ext_resource type="Texture2D" uid="uid://c6ft0to2dlr3y" path="res://Scenes/World/Texture/scythian_tombs_puresky_4k.exr" id="2_s53j1"]
+[ext_resource type="PackedScene" uid="uid://csmfywnb0ngty" path="res://Scenes/World/DesertChunkManager.tscn" id="4_il6x7"]
+[ext_resource type="Texture2D" uid="uid://b6tm0iouwi0wf" path="res://Scenes/World/Texture/Ground080_1K-JPG_Color.jpg" id="4_o14yy"]
+[ext_resource type="Texture2D" uid="uid://fgbxi3wobitw" path="res://Scenes/World/Texture/Ground080_1K-JPG_AmbientOcclusion.jpg" id="5_4sj48"]
+[ext_resource type="Texture2D" uid="uid://bj2k856nqx7de" path="res://Scenes/World/Texture/Ground080_1K-JPG_Displacement.jpg" id="6_s53j1"]
+[ext_resource type="Texture2D" uid="uid://bbsm10og3ercu" path="res://Scenes/World/Texture/Ground080_1K-JPG_NormalGL.jpg" id="7_ecnql"]
+[ext_resource type="Texture2D" uid="uid://dia570vexn0q7" path="res://Scenes/World/Texture/Ground080_1K-JPG_Roughness.jpg" id="8_v0w7q"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ecnql"]
+panorama = ExtResource("2_s53j1")
+
+[sub_resource type="Sky" id="Sky_y6flb"]
+sky_material = SubResource("PanoramaSkyMaterial_ecnql")
+
+[sub_resource type="Environment" id="Environment_mlekv"]
+background_mode = 2
+background_energy_multiplier = 0.5
+sky = SubResource("Sky_y6flb")
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 1.0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.4258801, 0.36882934, 0.25095096, 1)
+fog_density = 1.0
+fog_aerial_perspective = 0.724
+fog_sky_affect = 0.498
+fog_depth_begin = 300.0
+fog_depth_end = 450.0
+volumetric_fog_density = 0.03
+volumetric_fog_albedo = Color(0.8039216, 0.7254902, 0.5764706, 1)
+volumetric_fog_length = 300.0
+volumetric_fog_detail_spread = 2.4622886
+adjustment_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04mge"]
+albedo_color = Color(0.9311049, 0.68330055, 0.5489758, 1)
+albedo_texture = ExtResource("4_o14yy")
+roughness_texture = ExtResource("8_v0w7q")
+normal_enabled = true
+normal_texture = ExtResource("7_ecnql")
+bent_normal_texture = ExtResource("6_s53j1")
+ao_enabled = true
+ao_texture = ExtResource("5_4sj48")
+heightmap_enabled = true
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("6_s53j1")
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_s53j1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mlekv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.80924225, -0.50945777, -0.29254025, 0.32628956, -0.80386585, 0.49732792, -0.4885306, 0.30700594, 0.81675303, -0.71427774, 6.3123536, 2.2190096)
+light_color = Color(0.9359153, 0.90259403, 0.8562426, 1)
+light_energy = 0.6
+shadow_enabled = true
+
+[node name="Truck" parent="." instance=ExtResource("1_folwd")]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0, 0.3870108, 0)
+MAX_RPM = 700
+MAX_TORQUE = 600
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.283525, -42.303146)
+
+[node name="TerrainManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_il6x7")]
+player = NodePath("../Truck")
+chunk_material = SubResource("StandardMaterial3D_04mge")
+chunk_resolution = 3
+chunk_render_distance = 16
+chunk_height = 50.0
+noise_seed = 1
+layer1_scale = 0.002
+layer1_amplitude = 60.0
+layer2_scale = 0.02
+layer3_scale = 0.1
+layer3_amplitude = 1.0
+preview_chunks_x = 16
+preview_chunks_z = 16
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://cjyer75whv2sk")
+spawn_path = NodePath("../Zombies")
+
+[node name="Zombies" type="Node3D" parent="."]
+unique_name_in_owner = true

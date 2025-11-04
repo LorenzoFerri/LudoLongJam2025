@@ -33,6 +33,8 @@ func _init() -> void:
 	# Crea CollisionShape3D
 	collision_shape = CollisionShape3D.new()
 	add_child(collision_shape)
+	
+	mesh_instance.layers = 0b1001
 
 func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material: Material = null, height_calculator: Callable = Callable(), chunk_pos: Vector2i = Vector2i.ZERO, world_seed: int = 0) -> void:
 	_heightmap = heightmap

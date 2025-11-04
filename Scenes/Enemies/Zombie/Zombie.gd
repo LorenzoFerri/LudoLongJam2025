@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name Zombie
 
+var blood_decal = preload("res://Assets/Decal/Blood.png")
+
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
 @export_node_path var target_path: NodePath
@@ -51,3 +53,23 @@ func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_nor
 	blood_emitter.look_at_from_position(hit_position, hit_position - hit_normal, Vector3.UP)
 	blood_emitter.emitting = true
 	get_parent().add_child(blood_emitter)
+	
+	var decal = Decal.new()
+	decal.top_level = true
+	decal.texture_albedo = blood_decal
+	decal.texture_orm = blood_decal
+	decal.position = hit_position
+	decal.cull_mask = 0b1000
+	decal.rotate_y(randf_range(0, 2 * PI))
+	decal.modulate = Color("#c40000")
+	var random_scale = randf_range(0.5, 2)
+	decal.scale = Vector3(random_scale, random_scale, random_scale)
+	decal.tree_entered.connect(func(): 
+		await get_tree().create_timer(5).timeout
+		var color = decal.modulate
+		color.a = 0
+		var tween = get_tree().create_tween()
+		tween.tween_property(decal, "modulate", color, 5)
+		tween.tween_callback(decal.queue_free)
+	)
+	get_parent().add_child(decal)

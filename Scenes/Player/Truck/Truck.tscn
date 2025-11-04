@@ -492,7 +492,8 @@ lightmap_size_hint = Vector2i(8, 19)
 size = Vector3(0.7, 1.2, 0.2)
 
 [node name="Truck" type="VehicleBody3D"]
-collision_layer = 0
+collision_layer = 6
+collision_mask = 3
 mass = 240.0
 center_of_mass_mode = 1
 freeze_mode = 1

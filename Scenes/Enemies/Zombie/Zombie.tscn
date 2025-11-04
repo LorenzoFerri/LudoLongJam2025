@@ -823,8 +823,8 @@ properties/5/replication_mode = 1
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xicp"]
 
 [node name="Zombie" type="CharacterBody3D"]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_q16kx")
 
 [node name="MainCollisionShape" type="CollisionShape3D" parent="."]
@@ -1126,10 +1126,10 @@ skin = SubResource("Skin_1uppe")
 active = false
 
 [node name="Physical Bone _rootJoint" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(100, -8.538427e-08, 3.4228542e-06, 8.538427e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
+transform = Transform3D(100, -8.538791e-08, 3.4228542e-06, 8.538791e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
 collision_layer = 0
 joint_type = 3
-body_offset = Transform3D(100, -8.538336e-08, 7.700763e-14, 8.538336e-08, 100, 4.5474735e-13, 8.220112e-14, -4.5474735e-13, 100, 0, 0, 0)
+body_offset = Transform3D(100, -8.5387e-08, 7.700763e-14, 8.5387e-08, 100, 4.5474735e-13, 8.2201336e-14, -4.5474735e-13, 100, 0, 0, 0)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2
@@ -1188,11 +1188,11 @@ transform = Transform3D(0.01, 0, 0, 0, -4.3711387e-10, 0.01, 0, -0.01, -4.371138
 shape = SubResource("CapsuleShape3D_5uf83")
 
 [node name="Physical Bone bip Spine010_0197" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(99.73293, -6.073529, 4.056563, -7.2961783, -85.36371, 51.5733, 0.3305135, -51.73153, -85.57886, -0.98072505, -4.208121, 94.55443)
+transform = Transform3D(99.73293, -6.073529, 4.056563, -7.2961783, -85.36371, 51.5733, 0.3305135, -51.73153, -85.57885, -0.98072505, -4.208121, 94.55443)
 collision_layer = 0
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9774276e-07, -1.3973817e-05, 0.09777217)
-body_offset = Transform3D(-5.1498413e-05, 0.09690094, -99.999954, -0.00020551682, 99.99996, 0.096889496, 100.00001, 0.00020885468, -5.507469e-05, 9.777214, -0.008075714, -7.43866e-05)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9727664e-07, -1.3977549e-05, 0.09777217)
+body_offset = Transform3D(-5.1498413e-05, 0.09690094, -99.99996, -0.00020551682, 99.99996, 0.09689331, 100.00001, 0.00020885468, -5.4597855e-05, 9.777214, -0.008075714, -7.43866e-05)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2

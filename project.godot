@@ -80,6 +80,12 @@ shoot={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Terrain"
+3d_physics/layer_2="Truck"
+3d_physics/layer_3="Enemies"
+
 [physics]
 
 common/physics_interpolation=true

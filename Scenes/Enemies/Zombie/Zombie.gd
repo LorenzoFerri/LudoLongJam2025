@@ -39,6 +39,7 @@ func _physics_process(delta):
 				var collider = collision_info.get_collider()
 				if collider.is_class("VehicleBody3D"):				
 					dead = true
+					spawn_blood(collision_info.get_position(), collision_info.get_normal())
 	if dead and not ragdoll_started:
 		animation_player.active = false
 		collision_shape_3d.disabled = true
@@ -48,6 +49,9 @@ func _physics_process(delta):
 
 
 func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
+	spawn_blood(hit_position, hit_normal)
+
+func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 	var blood_emitter = blood_emitter_scene.instantiate()
 	blood_emitter.position = hit_position
 	blood_emitter.look_at_from_position(hit_position, hit_position - hit_normal, Vector3.UP)

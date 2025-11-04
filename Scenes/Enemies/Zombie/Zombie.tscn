@@ -1126,10 +1126,10 @@ skin = SubResource("Skin_1uppe")
 active = false
 
 [node name="Physical Bone _rootJoint" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(100, -8.53679e-08, 3.4228542e-06, 8.53679e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
+transform = Transform3D(100, -8.537518e-08, 3.4228542e-06, 8.537518e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
 collision_layer = 0
 joint_type = 3
-body_offset = Transform3D(100, -8.536699e-08, 7.700763e-14, 8.536699e-08, 100, 4.5474735e-13, 8.220009e-14, -4.5474735e-13, 100, 0, 0, 0)
+body_offset = Transform3D(100, -8.537427e-08, 7.700763e-14, 8.537427e-08, 100, 4.5474735e-13, 8.220052e-14, -4.5474735e-13, 100, 0, 0, 0)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2
@@ -1554,6 +1554,8 @@ autoplay = "Take 001"
 replication_config = SubResource("SceneReplicationConfig_2emt6")
 
 [node name="HurtBoxComponent" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 4
 script = ExtResource("3_dx3aw")
 metadata/_custom_type_script = "uid://ddpxrp667g1sk"
 
@@ -1561,3 +1563,5 @@ metadata/_custom_type_script = "uid://ddpxrp667g1sk"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67594916, 0)
 shape = SubResource("CapsuleShape3D_3xicp")
 debug_color = Color(0.96127874, 8.663535e-07, 0.51400894, 0.41960785)
+
+[connection signal="hurt" from="HurtBoxComponent" to="." method="_on_hurt_box_component_hurt"]

@@ -85,8 +85,6 @@ layer1_amplitude = 60.0
 layer2_scale = 0.02
 layer3_scale = 0.1
 layer3_amplitude = 1.0
-preview_chunks_x = 16
-preview_chunks_z = 16
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://cjyer75whv2sk")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://7rpusu8wrfl2"]
+[gd_scene load_steps=8 format=3 uid="uid://7rpusu8wrfl2"]
 
 [ext_resource type="Shader" uid="uid://ce0ehhcobkg1l" path="res://Scenes/Particles/BloodEmitter.tres" id="1_hc0op"]
+[ext_resource type="Script" uid="uid://b5kf2srfnsxit" path="res://Scenes/Particles/BloodEmitter.gd" id="2_wsi3c"]
 
 [sub_resource type="Curve" id="Curve_hc0op"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.578171), 0.0, 0.0, 0, 0]
@@ -9,14 +10,20 @@ point_count = 2
 [sub_resource type="CurveTexture" id="CurveTexture_wsi3c"]
 curve = SubResource("Curve_hc0op")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x1ddm"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s0nig"]
+angle_min = -89.99999
+angle_max = 90.000015
+direction = Vector3(0, 0, 0)
 spread = 3.0
-initial_velocity_min = 4.0
-initial_velocity_max = 6.0
-linear_accel_min = 3.9999976
-linear_accel_max = 3.9999976
-scale_max = 3.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+linear_accel_min = 0.99999774
+linear_accel_max = 0.99999774
+scale_min = 0.19999999
+scale_max = 1.5
 scale_curve = SubResource("CurveTexture_wsi3c")
+collision_mode = 2
+collision_use_scale = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hc0op"]
 render_priority = 0
@@ -27,7 +34,12 @@ material = SubResource("ShaderMaterial_hc0op")
 
 [node name="BloodEmitter" type="GPUParticles3D"]
 emitting = false
+amount = 10
+lifetime = 2.0
 one_shot = true
-explosiveness = 0.6
-process_material = SubResource("ParticleProcessMaterial_x1ddm")
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_s0nig")
 draw_pass_1 = SubResource("QuadMesh_hc0op")
+script = ExtResource("2_wsi3c")
+
+[connection signal="finished" from="." to="." method="_on_finished"]

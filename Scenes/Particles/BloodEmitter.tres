@@ -1,7 +1,7 @@
 [gd_resource type="VisualShader" load_steps=21 format=3 uid="uid://ce0ehhcobkg1l"]
 
 [sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_btd07"]
-constant = Color(1, 0, 0, 1)
+constant = Color(0.5803922, 0, 0, 1)
 
 [sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_1hlnb"]
 constant = 0.8
@@ -28,6 +28,7 @@ fractal_type = 0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hc0op"]
 noise = SubResource("FastNoiseLite_x1ddm")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_ch0lu"]
 texture = SubResource("NoiseTexture2D_hc0op")
@@ -61,6 +62,7 @@ output_port_for_preview = 0
 operator = 2
 
 [sub_resource type="VisualShaderNodeBillboard" id="VisualShaderNodeBillboard_5fiam"]
+billboard_type = 3
 keep_scale = true
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_t5n0q"]
@@ -70,7 +72,7 @@ input_name = "instance_id"
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx, unshaded;
 
 uniform sampler2D tex_frg_2;
 
@@ -90,9 +92,10 @@ void vertex() {
 	mat4 n_out2p0;
 // GetBillboardMatrix:2
 	{
-		mat4 __mvm = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
-		__mvm = __mvm * mat4(vec4(length(MODEL_MATRIX[0].xyz), 0.0, 0.0, 0.0), vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0), vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0), vec4(0.0, 0.0, 0.0, 1.0));
-		n_out2p0 = __mvm;
+		mat4 __wm = mat4(normalize(INV_VIEW_MATRIX[0]), normalize(INV_VIEW_MATRIX[1]), normalize(INV_VIEW_MATRIX[2]), MODEL_MATRIX[3]);
+		__wm = __wm * mat4(vec4(cos(INSTANCE_CUSTOM.x), -sin(INSTANCE_CUSTOM.x), 0.0, 0.0), vec4(sin(INSTANCE_CUSTOM.x), cos(INSTANCE_CUSTOM.x), 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		__wm = __wm * mat4(vec4(length(MODEL_MATRIX[0].xyz), 0.0, 0.0, 0.0), vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0), vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		n_out2p0 = VIEW_MATRIX * __wm;
 	}
 
 
@@ -105,7 +108,7 @@ void vertex() {
 
 void fragment() {
 // ColorConstant:10
-	vec4 n_out10p0 = vec4(1.000000, 0.000000, 0.000000, 1.000000);
+	vec4 n_out10p0 = vec4(0.580392, 0.000000, 0.000000, 1.000000);
 
 
 // Input:5
@@ -192,14 +195,15 @@ void fragment() {
 
 }
 "
+flags/unshaded = true
 nodes/vertex/0/position = Vector2(1500, -120)
 nodes/vertex/2/node = SubResource("VisualShaderNodeBillboard_5fiam")
-nodes/vertex/2/position = Vector2(900, 760)
+nodes/vertex/2/position = Vector2(660, 340)
 nodes/vertex/3/node = SubResource("VisualShaderNodeInput_t5n0q")
 nodes/vertex/3/position = Vector2(120, 20)
 nodes/vertex/4/node = SubResource("VisualShaderNodeVectorCompose_yj0f2")
 nodes/vertex/4/position = Vector2(840, -40)
-nodes/vertex/connections = PackedInt32Array(2, 0, 0, 10, 3, 0, 4, 0, 4, 0, 0, 6)
+nodes/vertex/connections = PackedInt32Array(4, 0, 0, 6, 2, 0, 0, 10, 3, 0, 4, 0)
 nodes/fragment/0/position = Vector2(3360, 400)
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_ch0lu")
 nodes/fragment/2/position = Vector2(700, 1120)

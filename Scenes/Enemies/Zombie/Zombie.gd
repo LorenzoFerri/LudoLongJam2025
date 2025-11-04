@@ -9,6 +9,7 @@ var target: Node3D
 var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity") * 10
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @export var dead = false
+const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")
 var ragdoll_started = false
 var time_accum = 0.0
 
@@ -42,3 +43,11 @@ func _physics_process(delta):
 		physical_bone_simulator_3d.active = true
 		physical_bone_simulator_3d.physical_bones_start_simulation()
 		ragdoll_started = true
+
+
+func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
+	var blood_emitter = blood_emitter_scene.instantiate()
+	blood_emitter.position = hit_position
+	blood_emitter.look_at_from_position(hit_position, hit_position - hit_normal, Vector3.UP)
+	blood_emitter.emitting = true
+	get_parent().add_child(blood_emitter)

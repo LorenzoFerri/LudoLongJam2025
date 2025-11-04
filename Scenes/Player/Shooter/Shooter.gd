@@ -41,7 +41,7 @@ func _input(event: InputEvent) -> void:
 		z_rotation_control.rotation_degrees.y -= event.relative.x * 0.1
 
 func shoot():
-	var bullet = bullet_scene.instantiate()
+	var bullet: Node3D = bullet_scene.instantiate()
 	bullet.start_position = shooting_raycast.global_position
 	var target = shooting_raycast.to_global(shooting_raycast.target_position)
 	bullet.end_position = target

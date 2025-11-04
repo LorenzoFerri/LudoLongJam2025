@@ -51,5 +51,5 @@ func create_player_label(player_id: int) -> Label:
 
 
 func _on_start_button_pressed() -> void:
-	MultiplayerManager.change_scene.rpc("res://World/World.tscn")
+	MultiplayerManager.change_scene.rpc("res://Scenes/World/World.tscn")
 	

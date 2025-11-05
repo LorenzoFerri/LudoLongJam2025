@@ -50,4 +50,4 @@ func shoot():
 	if shooting_raycast.is_colliding():
 		var collider = shooting_raycast.get_collider()
 		if collider is HurtBoxComponent:
-			collider.hurt.emit(current_weapon, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal())
+			collider.hit.rpc(null, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal())

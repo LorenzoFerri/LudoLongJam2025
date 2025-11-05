@@ -43,7 +43,6 @@ func shoot():
 	var bullet: Node3D = bullet_scene.instantiate()
 	bullet.start_position = shooting_raycast.global_position
 	var target = shooting_raycast.to_global(shooting_raycast.target_position)
-	bullet.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 	bullet.end_position = target
 	bullet.speed = current_weapon.projectile_speed
 	bullets_group.add_child(bullet, true)

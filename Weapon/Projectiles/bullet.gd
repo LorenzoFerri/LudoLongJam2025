@@ -7,11 +7,9 @@ extends Node3D
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-
+	set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 	if start_position == Vector3.ZERO and end_position == Vector3.ZERO:
 		return
-	set_multiplayer_authority(MultiplayerManager.get_shooter_id())
-	multiplayer_synchronizer.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 	self.global_position = start_position
 	self.look_at(end_position)
 
@@ -25,7 +23,7 @@ func _process(delta: float) -> void:
 	
 	if global_position.distance_to(end_position) <= 0.1:
 		visible = false
-		await get_tree().create_timer(5.0).timeout
-		# queue_free()
+		await get_tree().create_timer(1.0).timeout
+		queue_free()
 	
 	

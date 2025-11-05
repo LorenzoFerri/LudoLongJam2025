@@ -8,9 +8,11 @@ class_name Weapon
 @export var weapon_type: WeaponType = WeaponType.MACHINE_GUN
 
 enum WeaponType {
-	MACHINE_GUN
+	MACHINE_GUN,
+	TRUCK
 }
 
 static var weapons = {
-	WeaponType.MACHINE_GUN: preload("res://Weapon/MachineGun.tres")
+	WeaponType.MACHINE_GUN: preload("res://Weapon/MachineGun.tres"),
+	WeaponType.TRUCK: preload("res://Weapon/RoadKill.tres")
 }

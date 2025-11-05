@@ -13,6 +13,7 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity") * 10
 @export var dead = false
 const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")
 var time_accum = 0.0
+@onready var health_component: HealthComponent = $HealthComponent
 
 func _ready() -> void:
 	target = get_node_or_null(target_path)
@@ -37,7 +38,7 @@ func _physics_process(delta):
 			if collision_info:
 				var collider = collision_info.get_collider()
 				if collider.is_class("VehicleBody3D"):
-					die()
+					health_component.take_damage(Weapon.weapons[Weapon.WeaponType.TRUCK], collision_info.get_position(), collision_info.get_normal())
 					spawn_blood(collision_info.get_position(), collision_info.get_normal())
 					break
 

@@ -38,7 +38,7 @@ func _physics_process(delta):
 			if collision_info:
 				var collider = collision_info.get_collider()
 				if collider.is_class("VehicleBody3D"):
-					health_component.take_damage(Weapon.weapons[Weapon.WeaponType.TRUCK], collision_info.get_position(), collision_info.get_normal())
+					health_component.take_damage(WeaponList.weapons[WeaponList.WeaponType.TRUCK], collision_info.get_position(), collision_info.get_normal())
 					spawn_blood(collision_info.get_position(), collision_info.get_normal())
 					break
 

@@ -21,11 +21,12 @@ class_name Truck
 
 @export var fuel: float = STARTING_FUEL:
 	set(value):
-		fuel = value
+		fuel = clamp(value, 0, max_fuel)
 		fuel_bar.value = value
 @export var max_fuel: float = STARTING_FUEL:
 	set(value):
 		max_fuel = value
+		fuel = clamp(fuel, 0, max_fuel)
 		fuel_bar.max_value = max_fuel
 @export var fuel_decay_rate := 1.0
 

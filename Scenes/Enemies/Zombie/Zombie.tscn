@@ -1,7 +1,8 @@
-[gd_scene load_steps=32 format=4 uid="uid://cjyer75whv2sk"]
+[gd_scene load_steps=33 format=4 uid="uid://cjyer75whv2sk"]
 
 [ext_resource type="Script" uid="uid://b0f6phq4dei7t" path="res://Scenes/Enemies/Zombie/Zombie.gd" id="1_q16kx"]
 [ext_resource type="Script" uid="uid://ddpxrp667g1sk" path="res://Components/HurtBox/HurtBox.gd" id="3_dx3aw"]
+[ext_resource type="Script" uid="uid://d0486n3t8f823" path="res://Components/Health/Health.gd" id="4_3xicp"]
 [ext_resource type="Texture2D" uid="uid://so1akrthj3xk" path="res://Scenes/Enemies/Zombie/textures/peopleColors_baseColor.png" id="17_pmup2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l2nju"]
@@ -1126,10 +1127,10 @@ skin = SubResource("Skin_1uppe")
 active = false
 
 [node name="Physical Bone _rootJoint" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(100, -8.538973e-08, 3.4228542e-06, 8.538973e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
+transform = Transform3D(100, -8.539337e-08, 3.4228542e-06, 8.539337e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
 collision_layer = 0
 joint_type = 3
-body_offset = Transform3D(100, -8.538882e-08, 7.700763e-14, 8.538882e-08, 100, 4.5474735e-13, 8.2201444e-14, -4.5474735e-13, 100, 0, 0, 0)
+body_offset = Transform3D(100, -8.539246e-08, 7.700763e-14, 8.539246e-08, 100, 4.5474735e-13, 8.220166e-14, -4.5474735e-13, 100, 0, 0, 0)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2
@@ -1188,11 +1189,11 @@ transform = Transform3D(0.01, 0, 0, 0, -4.3711387e-10, 0.01, 0, -0.01, -4.371138
 shape = SubResource("CapsuleShape3D_5uf83")
 
 [node name="Physical Bone bip Spine010_0197" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(99.73293, -6.0735292, 4.0565624, -7.2961783, -85.36371, 51.57329, 0.3305135, -51.73153, -85.57885, -0.98072505, -4.208121, 94.55443)
+transform = Transform3D(99.73293, -6.0735292, 4.056563, -7.2961783, -85.36371, 51.57329, 0.3305135, -51.73153, -85.57886, -0.98072505, -4.208121, 94.55443)
 collision_layer = 0
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9820916e-07, -1.3962626e-05, 0.09777217)
-body_offset = Transform3D(-5.1498413e-05, 0.09690094, -99.99996, -0.00020551682, 99.99996, 0.09687805, 100.00001, 0.00020980835, -5.555153e-05, 9.777214, -0.008075714, -7.43866e-05)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9820916e-07, -1.3966352e-05, 0.09777216)
+body_offset = Transform3D(-5.1498413e-05, 0.09690094, -99.99997, -0.00020551682, 99.99996, 0.09688187, 100.00001, 0.00020980835, -5.555153e-05, 9.777214, -0.008075714, -7.43866e-05)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2
@@ -1564,4 +1565,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67594916, 0)
 shape = SubResource("CapsuleShape3D_3xicp")
 debug_color = Color(0.96127874, 8.663535e-07, 0.51400894, 0.41960785)
 
+[node name="HealthComponent" type="Node" parent="." node_paths=PackedStringArray("hurtbox_component")]
+script = ExtResource("4_3xicp")
+hurtbox_component = NodePath("../HurtBoxComponent")
+metadata/_custom_type_script = "uid://d0486n3t8f823"
+
 [connection signal="hurt" from="HurtBoxComponent" to="." method="_on_hurt_box_component_hurt"]
+[connection signal="death" from="HealthComponent" to="." method="_on_health_component_death"]

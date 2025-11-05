@@ -12,7 +12,6 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity") * 10
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @export var dead = false
 const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")
-var ragdoll_started = false
 var time_accum = 0.0
 
 func _ready() -> void:
@@ -37,15 +36,10 @@ func _physics_process(delta):
 			var collision_info = get_slide_collision(i)
 			if collision_info:
 				var collider = collision_info.get_collider()
-				if collider.is_class("VehicleBody3D"):				
-					dead = true
+				if collider.is_class("VehicleBody3D"):
+					die()
 					spawn_blood(collision_info.get_position(), collision_info.get_normal())
-	if dead and not ragdoll_started:
-		animation_player.active = false
-		collision_shape_3d.disabled = true
-		physical_bone_simulator_3d.active = true
-		physical_bone_simulator_3d.physical_bones_start_simulation()
-		ragdoll_started = true
+					break
 
 
 func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
@@ -77,3 +71,13 @@ func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 		tween.tween_callback(decal.queue_free)
 	)
 	get_parent().add_child(decal)
+
+func die():
+	dead = true
+	animation_player.active = false
+	collision_shape_3d.disabled = true
+	physical_bone_simulator_3d.active = true
+	physical_bone_simulator_3d.physical_bones_start_simulation()
+
+func _on_health_component_death() -> void:
+	die()

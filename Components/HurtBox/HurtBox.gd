@@ -9,5 +9,5 @@ func _ready() -> void:
 	pass
 
 @rpc("any_peer", "call_local", "reliable")
-func hit(weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
-	hurt.emit(weapon, hit_position, hit_normal)
+func hit(weapon_type: Weapon.WeaponType, hit_position: Vector3, hit_normal: Vector3) -> void:
+	hurt.emit(Weapon.weapons[weapon_type], hit_position, hit_normal)

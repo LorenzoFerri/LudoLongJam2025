@@ -15,8 +15,7 @@ const machine_gun = preload("res://Weapon/MachineGun.tres")
 @onready var shooting_raycast: RayCast3D = %ShootingRaycast
 @onready var bullets_group: Node3D = $Bullets
 @onready var current_weapon: Weapon = machine_gun
-
-
+@onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 func _ready() -> void:
 	shooting_timer.wait_time = current_weapon.attack_cooldown
 
@@ -44,6 +43,7 @@ func shoot():
 	var bullet: Node3D = bullet_scene.instantiate()
 	bullet.start_position = shooting_raycast.global_position
 	var target = shooting_raycast.to_global(shooting_raycast.target_position)
+	bullet.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 	bullet.end_position = target
 	bullet.speed = current_weapon.projectile_speed
 	bullets_group.add_child(bullet, true)

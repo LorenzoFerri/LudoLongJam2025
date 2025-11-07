@@ -15,7 +15,7 @@ const machine_gun = preload("res://Weapon/MachineGun.tres")
 @onready var shooting_raycast: RayCast3D = %ShootingRaycast
 @onready var bullets_group: Node3D = $Bullets
 @onready var current_weapon: Weapon = machine_gun
-@onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
+
 func _ready() -> void:
 	shooting_timer.wait_time = current_weapon.attack_cooldown
 
@@ -46,10 +46,10 @@ func shoot():
 		if collider is HurtBoxComponent:
 			collider.hit.rpc(current_weapon.weapon_type, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal())
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("any_peer", "call_local", "unreliable")
 func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
 	var bullet: Node3D = bullet_scene.instantiate()
 	bullet.start_position = start_position
 	bullet.end_position = target_position
 	bullet.speed = current_weapon.projectile_speed
-	bullets_group.add_child(bullet, true)
+	bullets_group.add_child(bullet)

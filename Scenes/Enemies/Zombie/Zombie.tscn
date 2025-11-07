@@ -808,18 +808,9 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("AnimationPlayer:active")
+properties/2/path = NodePath(".:target_path")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath("rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D:active")
-properties/3/spawn = true
-properties/3/replication_mode = 1
-properties/4/path = NodePath(".:target_path")
-properties/4/spawn = true
-properties/4/replication_mode = 1
-properties/5/path = NodePath(".:dead")
-properties/5/spawn = true
-properties/5/replication_mode = 1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xicp"]
 
@@ -1127,10 +1118,10 @@ skin = SubResource("Skin_1uppe")
 active = false
 
 [node name="Physical Bone _rootJoint" type="PhysicalBone3D" parent="rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(100, -8.5398824e-08, 3.4228542e-06, 8.5398824e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
+transform = Transform3D(100, -8.54061e-08, 3.4228542e-06, 8.54061e-08, 100, 1.7114294e-06, -3.4228544e-06, -1.7114298e-06, 100, 0, 0, 0)
 collision_layer = 0
 joint_type = 3
-body_offset = Transform3D(100, -8.5397915e-08, 7.700763e-14, 8.5397915e-08, 100, 4.5474735e-13, 8.2201986e-14, -4.5474735e-13, 100, 0, 0, 0)
+body_offset = Transform3D(100, -8.540519e-08, 7.700763e-14, 8.540519e-08, 100, 4.5474735e-13, 8.220242e-14, -4.5474735e-13, 100, 0, 0, 0)
 mass = 10.0
 linear_damp = 0.2
 angular_damp = 0.2
@@ -1570,5 +1561,6 @@ script = ExtResource("4_3xicp")
 hurtbox_component = NodePath("../HurtBoxComponent")
 metadata/_custom_type_script = "uid://d0486n3t8f823"
 
+[connection signal="body_entered" from="HurtBoxComponent" to="." method="_on_hurt_box_component_body_entered"]
 [connection signal="hurt" from="HurtBoxComponent" to="." method="_on_hurt_box_component_hurt"]
 [connection signal="death" from="HealthComponent" to="." method="_on_health_component_death"]

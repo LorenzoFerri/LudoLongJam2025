@@ -18,7 +18,10 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if start_position == Vector3.ZERO and end_position == Vector3.ZERO:
 		return
-	
+
+	if not visible:
+		return
+
 	global_position = global_position.move_toward(end_position, delta * speed)
 	
 	if global_position.distance_to(end_position) <= 0.1:

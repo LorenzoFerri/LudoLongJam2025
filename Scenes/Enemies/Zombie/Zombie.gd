@@ -14,18 +14,19 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity") * 10
 const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")
 var time_accum = 0.0
 @onready var health_component: HealthComponent = $HealthComponent
+@onready var hurt_box_component: HurtBoxComponent = $HurtBoxComponent
 
 func _ready() -> void:
 	target = get_node_or_null(target_path)
 
 func _physics_process(delta):
+	if dead: return
 	if multiplayer.is_server():
-		if dead: return
-		time_accum += delta
-		if time_accum < 0.2: # aggiorna 5 volte al secondo
-			move_and_slide()
-			return
-		time_accum = 0.0
+		# time_accum += delta
+		# if time_accum < 0.2: # aggiorna 5 volte al secondo
+		# 	move_and_slide()
+		# 	return
+		# time_accum = 0.0
 		look_at(target.global_transform.origin, Vector3.UP)
 		var direction = (target.global_transform.origin - global_transform.origin).normalized()
 		velocity.x = direction.x * speed
@@ -33,14 +34,6 @@ func _physics_process(delta):
 		if not is_on_floor():
 			velocity.y -= GRAVITY * delta
 		move_and_slide()
-		for i in range(get_slide_collision_count()):
-			var collision_info = get_slide_collision(i)
-			if collision_info:
-				var collider = collision_info.get_collider()
-				if collider.is_class("VehicleBody3D"):
-					health_component.take_damage(WeaponList.weapons[WeaponList.WeaponType.TRUCK], collision_info.get_position(), collision_info.get_normal())
-					spawn_blood(collision_info.get_position(), collision_info.get_normal())
-					break
 
 
 func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
@@ -63,7 +56,7 @@ func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 	decal.modulate = Color("#c40000")
 	var random_scale = randf_range(0.5, 2)
 	decal.scale = Vector3(random_scale, random_scale, random_scale)
-	decal.tree_entered.connect(func(): 
+	decal.tree_entered.connect(func():
 		await get_tree().create_timer(5).timeout
 		var color = decal.modulate
 		color.a = 0
@@ -73,12 +66,23 @@ func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 	)
 	get_parent().add_child(decal)
 
+@rpc("authority", "call_local")
 func die():
 	dead = true
 	animation_player.active = false
-	collision_shape_3d.disabled = true
-	physical_bone_simulator_3d.active = true
-	physical_bone_simulator_3d.physical_bones_start_simulation()
+	collision_shape_3d.set_deferred("disabled", true)
+	physical_bone_simulator_3d.set_deferred("active", true)
+	physical_bone_simulator_3d.call_deferred("physical_bones_start_simulation")
 
 func _on_health_component_death() -> void:
-	die()
+	die.rpc()
+
+
+func _on_hurt_box_component_body_entered(body: Node3D) -> void:
+	if body is Truck:
+		var truck: Truck = body
+		hurt_box_component.hit.rpc(
+			WeaponList.WeaponType.TRUCK,
+			truck.global_transform.origin,
+			truck.global_position.direction_to(global_transform.origin)
+		)

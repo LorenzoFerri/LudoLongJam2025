@@ -40,14 +40,16 @@ func _input(event: InputEvent) -> void:
 		z_rotation_control.rotation_degrees.y -= event.relative.x * 0.1
 
 func shoot():
-	var bullet: Node3D = bullet_scene.instantiate()
-	bullet.start_position = shooting_raycast.global_position
-	var target = shooting_raycast.to_global(shooting_raycast.target_position)
-	bullet.end_position = target
-	bullet.speed = current_weapon.projectile_speed
-	bullets_group.add_child(bullet, true)
-	
+	spawn_bullet.rpc(shooting_raycast.global_position, shooting_raycast.to_global(shooting_raycast.target_position))
 	if shooting_raycast.is_colliding():
 		var collider = shooting_raycast.get_collider()
 		if collider is HurtBoxComponent:
 			collider.hit.rpc(current_weapon.weapon_type, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal())
+
+@rpc("any_peer", "call_local", "reliable")
+func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
+	var bullet: Node3D = bullet_scene.instantiate()
+	bullet.start_position = start_position
+	bullet.end_position = target_position
+	bullet.speed = current_weapon.projectile_speed
+	bullets_group.add_child(bullet, true)

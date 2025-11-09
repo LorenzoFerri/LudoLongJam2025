@@ -1,24 +1,22 @@
 [gd_scene load_steps=4 format=3 uid="uid://b8xqek2ksw8vj"]
 
 [ext_resource type="Script" uid="uid://br1osxu167gcq" path="res://Scenes/Goals/Goal.gd" id="1_te5sv"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_wwmfl"]
-top_radius = 1.0
-bottom_radius = 1.0
-height = 6.0
+[ext_resource type="PackedScene" uid="uid://dvojaeu0wg4p5" path="res://Assets/City/City.blend" id="2_vvheb"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_wwmfl"]
-radius = 5.0
+radius = 50.0
 
 [node name="Goal" type="Node3D"]
 script = ExtResource("1_te5sv")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("CylinderMesh_wwmfl")
-
 [node name="Area3D" type="Area3D" parent="."]
+collision_layer = 3
+collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_wwmfl")
+
+[node name="City" parent="." instance=ExtResource("2_vvheb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

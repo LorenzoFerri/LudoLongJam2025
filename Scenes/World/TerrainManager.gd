@@ -121,9 +121,9 @@ var goal_scene = preload("res://Scenes/Goals/Goal.tscn")
 
 @export_group("Goals Settings")
 @export var goals_enabled: bool = true
-@export var goal_distance_from_player: float = 500.0
-@export var goal_separation_distance: float = 250.0
-@export var number_of_goals: int = 3
+@export var goal_distance_from_player: float = 900.0
+@export var goal_separation_distance: float = 1500.0
+@export var number_of_goals: int = 10
 
 
 # Variabili interne
@@ -152,10 +152,11 @@ func _ready() -> void:
 	_setup_threading()
 	_initial_chunk_load()
 	
+	seed(noise_seed)
+	
 	if goals_enabled:
 		_spawn_goals()
 
-	seed(noise_seed)
 
 func _setup_noise() -> void:
 	# Layer 1 - Terrain di base

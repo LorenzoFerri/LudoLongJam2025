@@ -227,6 +227,7 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 			var query = PhysicsRayQueryParameters3D.create(start, end)
 			query.collide_with_areas = false
 			query.collide_with_bodies = true
+			query.collision_mask = 1 << 0  # terrain layer
 			var result = get_world_3d().direct_space_state.intersect_ray(query)
 			if result and result.has("position"):
 				y = result.position.y
@@ -239,8 +240,12 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 			if not micro_data.has(pos_key):
 				picked_scene = micro_scenes.pick_random()
 				obj = picked_scene.instantiate()
-				obj.position = Vector3(wx, y - 0.5, wz)
 				obj.rotation.y = randf_range(0.0, TAU)
+				#obj.position = Vector3(wx, y - 0.5, wz)
+				# inside _spawn_micro_objects_for_chunk
+				var local_x = wx - world_origin.x
+				var local_z = wz - world_origin.y
+				obj.position = Vector3(local_x, y - 1.0, local_z)
 
 				chunk.add_child(obj, true)
 				objects.append(obj)

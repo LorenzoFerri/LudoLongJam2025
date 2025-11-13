@@ -162,7 +162,6 @@ func _spawn_goal(cell_coords: Vector2i):
 		instance.position = world_pos
 		instance.rotation.y = randf_range(0.0, TAU)
 		instance.goal_reached.connect(func(): 
-			print("AAAA")
 			goals_data[cell_coords].was_reached = true
 			goal_process_cooldown = 0
 		)

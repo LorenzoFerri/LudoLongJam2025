@@ -32,7 +32,7 @@ class_name Truck
 
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
 
-var next_goal: Goal = null
+var next_goal_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	MultiplayerManager.players_changed.connect(_on_players_changed)
@@ -70,9 +70,9 @@ func _process(delta: float) -> void:
 		if direction == 0: brake = 2
 		
 		# goal arrow
-		if next_goal != null:
+		if next_goal_position != Vector3.ZERO:
 			# Direction from car to goal, in world space
-			var dir_world = (next_goal.global_position - global_position)
+			var dir_world = (next_goal_position - global_position)
 			dir_world.y = 0  # Ignore vertical difference
 
 			if dir_world.length() == 0:

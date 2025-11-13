@@ -122,12 +122,6 @@ var goal_scene = preload("res://Scenes/Goals/Goal.tscn")
 		if Engine.is_editor_hint() and preview_enabled:
 			_update_preview()
 
-@export_group("Goals Settings")
-@export var goals_enabled: bool = true
-@export var goal_distance_from_player: float = 900.0
-@export var goal_separation_distance: float = 1500.0
-@export var number_of_goals: int = 10
-
 @export_group("Spawn Settings")
 @export var goals_noise: FastNoiseLite
 @export var goals_threshold: float = 0.9
@@ -164,9 +158,6 @@ func _ready() -> void:
 	_initial_chunk_load()
 	
 	seed(noise_seed)
-	
-	if goals_enabled:
-		_spawn_goals()
 
 
 func _setup_noise() -> void:
@@ -408,29 +399,5 @@ func _clear_preview() -> void:
 			chunk.queue_free()
 	preview_chunks.clear()
 
-func _spawn_goals() -> void:
-	if not player:
-		push_warning("Cannot spawn goals: player not assigned.")
-		return
-
-	var rng = RandomNumberGenerator.new()
-	rng.seed = noise_seed + 1234
-	var dir = Vector2(rng.randf_range(-1, 1), rng.randf_range(-1, 1)).normalized()
-	var player_pos = Vector3(0, 0, 0)
-
-	for i in range(number_of_goals):
-		var offset_dir := dir.rotated(deg_to_rad(rng.randf_range(-10, 10))) # small random spread
-		var distance := goal_distance_from_player + rng.randi_range(-50, 150) + (i * (goal_separation_distance))
-		var goal_pos_2d := Vector2(player_pos.x, player_pos.z) + offset_dir * distance
-
-		# Calculate height using terrain noise
-		var y := _calculate_height(int(goal_pos_2d.x), int(goal_pos_2d.y))
-
-		# Create goal node
-		var goal: Goal = goal_scene.instantiate()
-		goal.name = "Goal_%d" % i
-		goal.position = Vector3(goal_pos_2d.x, y + 2.0, goal_pos_2d.y) # slightly above ground
-		add_child(goal)
-		get_parent().add_goal(goal)
 		
 		

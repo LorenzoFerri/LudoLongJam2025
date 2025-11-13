@@ -38,12 +38,14 @@ var _goals_noise: FastNoiseLite
 var _micro_noise: FastNoiseLite
 var _spawned_goals: Dictionary = {}  # key = macro cell coords
 var _spawned_micro_objects: Dictionary = {}   # key = chunk_pos -> [nodes]
-
+var player: Truck = null
 
 func _ready():
 	if not terrain_manager:
 		push_error("WorldSpawner: terrain_manager not assigned.")
-		return
+		assert(false)
+		
+	player = terrain_manager.player
 
 	terrain_manager.chunk_loaded.connect(_on_chunk_loaded)
 	terrain_manager.chunk_unloaded.connect(_on_chunk_unloaded)
@@ -54,19 +56,20 @@ func _ready():
 	_setup_noise()
 
 
-var despawn_cooldown := 0.0
+var goal_process_cooldown := 0.0
 
 func _process(delta: float) -> void:
-	if despawn_cooldown <= 0:
-		_unload_goals_far_from_player()
-		despawn_cooldown = 0.5
+	if goal_process_cooldown <= 0:
+		var goal_range = 8
+		_unload_goals_far_from_player(goal_range)
+		_spawn_goals_around_player(goal_range)
+		player.next_goal_position = get_closest_goal(player.global_position)
+		goal_process_cooldown = 1
 	else:
-		despawn_cooldown -= delta
-
+		goal_process_cooldown -= delta
 
 
 func _on_chunk_loaded(chunk_pos: Vector2i, _chunk: Node3D):
-	_spawn_goals_around(chunk_pos)
 	_spawn_micro_objects_for_chunk(chunk_pos)
 
 
@@ -91,8 +94,6 @@ func _on_chunk_unloaded(chunk_pos: Vector2i):
 			var wz = world_origin.y + z
 			micro_data.erase(Vector2i(wx, wz))
 
-	
-
 
 func _setup_noise():
 	_goals_noise = FastNoiseLite.new()
@@ -106,30 +107,37 @@ func _setup_noise():
 	_micro_noise.frequency = micro_noise_frequency
 
 
-func _spawn_goals_around(chunk_pos: Vector2i):
-	# Determine which macro cells overlap this chunk
-	var chunk_size = terrain_manager.chunk_size
-	var world_chunk_origin = Vector2(chunk_pos.x * chunk_size, chunk_pos.y * chunk_size)
+func _spawn_goals_around_player(radius_in_cells: int = 5):
+	var tm = terrain_manager
+	if not tm or not tm.player:
+		return
 
-	var start_cell = Vector2i(floor(world_chunk_origin.x / goals_cell_size), floor(world_chunk_origin.y / goals_cell_size))
-	var end_cell = Vector2i(floor((world_chunk_origin.x + chunk_size) / goals_cell_size), floor((world_chunk_origin.y + chunk_size) / goals_cell_size))
+	var player_pos = Vector2(tm.player.global_position.x, tm.player.global_position.z)
+	var player_cell = Vector2i(
+		floor(player_pos.x / goals_cell_size),
+		floor(player_pos.y / goals_cell_size)
+	)
 
-	for cx in range(start_cell.x, end_cell.x + 1):
-		for cz in range(start_cell.y, end_cell.y + 1):
+	for cx in range(player_cell.x - radius_in_cells, player_cell.x + radius_in_cells + 1):
+		for cz in range(player_cell.y - radius_in_cells, player_cell.y + radius_in_cells + 1):
 			var cell_coords = Vector2i(cx, cz)
-			
+
+			# Already spawned and valid → skip
 			if _spawned_goals.has(cell_coords) and is_instance_valid(_spawned_goals[cell_coords]):
 				continue
-			elif _spawned_goals.has(cell_coords) and not is_instance_valid(_spawned_goals[cell_coords]):
+
+			# Remove invalid instances
+			if _spawned_goals.has(cell_coords) and not is_instance_valid(_spawned_goals[cell_coords]):
 				_spawned_goals.erase(cell_coords)
 
-			#var val = _goals_noise.get_noise_2d(cx, cz)
+			# Sample noise deterministically for this macro cell
 			var world_x = float(cx) * goals_cell_size
 			var world_z = float(cz) * goals_cell_size
 			var val = _goals_noise.get_noise_2d(world_x, world_z)
 
 			if val > goals_spawn_threshold:
 				_spawn_goal(cell_coords)
+
 
 func _spawn_goal(cell_coords: Vector2i):
 	var rng = RandomNumberGenerator.new()
@@ -153,11 +161,17 @@ func _spawn_goal(cell_coords: Vector2i):
 		var instance = picked_scene.instantiate()
 		instance.position = world_pos
 		instance.rotation.y = randf_range(0.0, TAU)
+		instance.goal_reached.connect(func(): 
+			print("AAAA")
+			goals_data[cell_coords].was_reached = true
+			goal_process_cooldown = 0
+		)
 		add_child(instance, true)
 		_spawned_goals[cell_coords] = instance
 		goals_data[cell_coords] = {
 			"picked_scene": picked_scene,
 			"rotation": instance.rotation,
+			"position": instance.global_position,
 			"was_reached": false,
 		}
 	else:
@@ -170,7 +184,7 @@ func _spawn_goal(cell_coords: Vector2i):
 		instance.was_reached = data.was_reached
 
 
-func _unload_goals_far_from_player():
+func _unload_goals_far_from_player(despawn_range: float = 10.0):
 	var tm = terrain_manager
 	var chunk_size = tm.chunk_size
 	var active_radius = float(tm.chunk_render_distance + 1) * chunk_size
@@ -189,7 +203,9 @@ func _unload_goals_far_from_player():
 		)
 
 		var dist = goal_center.distance_to(player_pos_2d)
-		if dist > active_radius * 3.0:
+		var goal_unload_multiplier = 1.5 * (despawn_range * goals_cell_size) / active_radius
+
+		if dist > active_radius * goal_unload_multiplier:
 			inst.queue_free()
 			_spawned_goals.erase(cell_coords)
 
@@ -266,3 +282,25 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 				objects.append(obj)
 
 	_spawned_micro_objects[chunk_pos] = objects
+
+
+func get_closest_goal(player_pos: Vector3) -> Vector3:
+	var closest_goal_pos: Vector3 = Vector3.INF
+	var closest_dist = INF
+
+	for cell_coords in goals_data.keys():
+		var data = goals_data[cell_coords]
+
+		# Skip goals that were already reached
+		if data.was_reached:
+			continue
+
+		var goal_pos = data.position
+		goal_pos.y = terrain_manager._calculate_height(int(goal_pos.x), int(goal_pos.z))
+
+		var dist = player_pos.distance_to(goal_pos)
+		if dist < closest_dist:
+			closest_dist = dist
+			closest_goal_pos = goal_pos
+	
+	return closest_goal_pos

@@ -159,10 +159,10 @@ func generate_mesh(heightmap: Array, chunk_size: int, resolution: int, material:
 		mesh_instance.material_override = default_material
 	
 	# Genera rocce in modo deterministico basato sul seed del chunk
-	if rng.randi_range(0, 18) == 0:
-		var rock: StaticBody3D = rocks_scenes[rng.randi_range(0, rocks_scenes.size() - 1)].instantiate()
-		add_child(rock)
-		rock.position.y = 15
+	#if rng.randi_range(0, 18) == 0:
+		#var rock: StaticBody3D = rocks_scenes[rng.randi_range(0, rocks_scenes.size() - 1)].instantiate()
+		#add_child(rock)
+		#rock.position.y = 15
 		# var v = vertices[float(resolution) / 2][float(resolution) / 2]
 		# rock.position.y = v.y - 1.3
 		# var norm = normals[float(resolution) / 2][float(resolution) / 2]

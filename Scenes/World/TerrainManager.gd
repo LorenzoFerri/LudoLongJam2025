@@ -2,6 +2,9 @@
 extends Node3D
 class_name TerrainManager
 
+signal chunk_loaded(chunk_pos: Vector2i, chunk_node: Node3D)
+signal chunk_unloaded(chunk_pos: Vector2i)
+
 var goal_scene = preload("res://Scenes/Goals/Goal.tscn")
 
 ## Gestisce la generazione e il caricamento dei chunk del terreno infinito
@@ -124,6 +127,14 @@ var goal_scene = preload("res://Scenes/Goals/Goal.tscn")
 @export var goal_distance_from_player: float = 900.0
 @export var goal_separation_distance: float = 1500.0
 @export var number_of_goals: int = 10
+
+@export_group("Spawn Settings")
+@export var goals_noise: FastNoiseLite
+@export var goals_threshold: float = 0.9
+@export var decorations_noise: FastNoiseLite
+@export var decorations_threshold: float = 0.3
+@export var zombies_noise: FastNoiseLite
+@export var zombies_threshold: float = 0.6
 
 
 # Variabili interne
@@ -326,12 +337,14 @@ func _create_chunk_mesh(chunk_data: Dictionary) -> void:
 	# Aggiungi alla scena
 	add_child(chunk)
 	loaded_chunks[chunk_pos] = chunk
+	emit_signal("chunk_loaded", chunk_pos, chunk)
 
 func _unload_chunk(chunk_pos: Vector2i) -> void:
 	if loaded_chunks.has(chunk_pos):
 		var chunk = loaded_chunks[chunk_pos]
 		chunk.queue_free()
 		loaded_chunks.erase(chunk_pos)
+		emit_signal("chunk_unloaded", chunk_pos)
 
 func _get_chunk_position(world_pos: Vector3) -> Vector2i:
 	return Vector2i(

@@ -2,42 +2,72 @@ extends CharacterBody3D
 class_name Zombie
 
 var blood_decal = preload("res://Assets/Decal/Blood.png")
+const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.gd")
+@export var gravity_scale := 10.0
 
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
 @export_node_path var target_path: NodePath
 var target: Node3D
 @export_range(0.1, 10.0, 0.1) var speed := 3.0
-var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity") * 10
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @export var dead = false
 const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")
 var time_accum = 0.0
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var hurt_box_component: HurtBoxComponent = $HurtBoxComponent
+var _move_direction := Vector3.ZERO
+var _vertical_velocity := 0.0
+var _is_on_floor := false
+@onready var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity") * gravity_scale
 
 func _ready() -> void:
 	target = get_node_or_null(target_path)
+	if ZombieManagerClass.instance:
+		ZombieManagerClass.instance.register_zombie(self)
+	else:
+		call_deferred("_deferred_register")
 
-func _physics_process(delta):
-	if dead: return
-	if multiplayer.is_server():
-		# time_accum += delta
-		# if time_accum < 0.2: # aggiorna 5 volte al secondo
-		# 	move_and_slide()
-		# 	return
-		# time_accum = 0.0
-		look_at(target.global_transform.origin, Vector3.UP)
-		var direction = (target.global_transform.origin - global_transform.origin).normalized()
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
-		if not is_on_floor():
-			velocity.y -= GRAVITY * delta
-		move_and_slide()
+func _deferred_register() -> void:
+	if ZombieManagerClass.instance:
+		ZombieManagerClass.instance.register_zombie(self)
+	else:
+		push_warning("ZombieManager instance not available for registration")
 
+func _exit_tree() -> void:
+	if ZombieManagerClass.instance:
+		ZombieManagerClass.instance.unregister_zombie(self)
 
 func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
 	spawn_blood(hit_position, hit_normal)
+
+func get_target() -> Node3D:
+	return target
+
+func manager_apply_transform(new_transform: Transform3D, direction: Vector3, vertical_velocity: float, on_floor: bool) -> void:
+	global_transform = new_transform
+	_move_direction = direction
+	_vertical_velocity = vertical_velocity
+	_is_on_floor = on_floor
+	velocity = Vector3(direction.x * speed, vertical_velocity, direction.z * speed)
+
+func manager_get_vertical_velocity() -> float:
+	return _vertical_velocity
+
+func manager_set_vertical_velocity(value: float) -> void:
+	_vertical_velocity = value
+
+func manager_is_on_floor() -> bool:
+	return _is_on_floor
+
+func manager_set_on_floor(value: bool) -> void:
+	_is_on_floor = value
+
+func manager_get_gravity() -> float:
+	return _gravity
+
+func manager_get_move_direction() -> Vector3:
+	return _move_direction
 
 func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 	var blood_emitter = blood_emitter_scene.instantiate()
@@ -73,6 +103,8 @@ func die():
 	collision_shape_3d.set_deferred("disabled", true)
 	physical_bone_simulator_3d.set_deferred("active", true)
 	physical_bone_simulator_3d.call_deferred("physical_bones_start_simulation")
+	if ZombieManagerClass.instance:
+		ZombieManagerClass.instance.unregister_zombie(self)
 
 func _on_health_component_death() -> void:
 	die.rpc()

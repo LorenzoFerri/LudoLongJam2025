@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bow45h53alwmo"]
+[gd_scene load_steps=16 format=3 uid="uid://bow45h53alwmo"]
 
 [ext_resource type="PackedScene" uid="uid://bdylrsie22fbj" path="res://Scenes/Player/Truck/Truck.tscn" id="1_folwd"]
 [ext_resource type="Script" uid="uid://cv51dkhpyy8if" path="res://Scenes/World/World.gd" id="1_s53j1"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bbsm10og3ercu" path="res://Scenes/World/Texture/Ground080_1K-JPG_NormalGL.jpg" id="7_ecnql"]
 [ext_resource type="Texture2D" uid="uid://dia570vexn0q7" path="res://Scenes/World/Texture/Ground080_1K-JPG_Roughness.jpg" id="8_v0w7q"]
 [ext_resource type="Script" uid="uid://d3eobcxci3psv" path="res://Scenes/World/WorldSpawner.gd" id="10_kuxid"]
+[ext_resource type="Script" uid="uid://c2foq3vbvf651" path="res://Scenes/Enemies/Zombie/ZombieManager.gd" id="10_ng1ea"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ecnql"]
 panorama = ExtResource("2_s53j1")
@@ -93,6 +94,8 @@ spawn_path = NodePath("../Zombies")
 
 [node name="Zombies" type="Node3D" parent="."]
 unique_name_in_owner = true
+script = ExtResource("10_ng1ea")
+collisions_per_frame = 32
 
 [node name="WorldSpawner" type="Node3D" parent="." node_paths=PackedStringArray("terrain_manager")]
 script = ExtResource("10_kuxid")

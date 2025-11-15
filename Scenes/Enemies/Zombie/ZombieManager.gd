@@ -1,0 +1,122 @@
+extends Node3D
+class_name ZombieManager
+
+@export_range(0, 512, 1) var collisions_per_frame := 0
+@export var collision_margin := 0.05
+
+static var instance: ZombieManager
+
+var _zombies: Array[Zombie] = []
+var _next_index: int = 0
+
+func _ready() -> void:
+	if instance and instance != self:
+		push_warning("ZombieManager instance already exists, removing duplicate")
+		self.queue_free()
+		return
+	instance = self
+	set_physics_process(true)
+
+func _exit_tree() -> void:
+	if instance == self:
+		instance = null
+
+func register_zombie(zombie: Zombie) -> void:
+	if zombie in _zombies:
+		return
+	_zombies.append(zombie)
+	zombie.set_physics_process(false)
+	zombie.manager_set_vertical_velocity(0.0)
+	zombie.manager_set_on_floor(false)
+
+func unregister_zombie(zombie: Zombie) -> void:
+	var idx := _zombies.find(zombie)
+	if idx == -1:
+		return
+	_zombies.remove_at(idx)
+	if _next_index > idx:
+		_next_index -= 1
+	_next_index = clamp(_next_index, 0, max(0, _zombies.size() - 1))
+
+func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+	if _zombies.is_empty():
+		return
+	var total: int = _zombies.size()
+	var limit: int
+	if collisions_per_frame <= 0:
+		limit = total
+	else:
+		limit = min(collisions_per_frame, total)
+	for i in range(total):
+		var index := (_next_index + i) % total
+		var zombie: Zombie = _zombies[index]
+		var run_collision := i < limit
+		var vertical_speed: float = zombie.manager_get_vertical_velocity()
+		var needs_collision: bool = run_collision or (not zombie.manager_is_on_floor()) or (absf(vertical_speed) > 0.01)
+		_update_zombie(zombie, delta, needs_collision)
+	_next_index = (_next_index + limit) % max(1, total)
+
+func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> void:
+	if zombie.dead:
+		return
+	var target: Node3D = zombie.get_target()
+	if not zombie.is_inside_tree():
+		return
+	var origin: Vector3 = zombie.global_transform.origin
+	var dir: Vector3 = zombie.manager_get_move_direction()
+	if target != null:
+		var target_pos: Vector3 = target.global_transform.origin
+		var to_target: Vector3 = target_pos - origin
+		to_target.y = 0.0
+		var dist_sq: float = to_target.length_squared()
+		if dist_sq >= 0.0001:
+			dir = to_target / sqrt(dist_sq)
+	var gravity_force: float = zombie.manager_get_gravity()
+	var vertical_velocity: float = zombie.manager_get_vertical_velocity()
+	var was_on_floor := zombie.manager_is_on_floor()
+	if was_on_floor:
+		if vertical_velocity < 0.0:
+			vertical_velocity = 0.0
+	else:
+		vertical_velocity -= gravity_force * delta
+	var horizontal_velocity: Vector3 = dir * zombie.speed
+	var velocity: Vector3 = Vector3(horizontal_velocity.x, vertical_velocity, horizontal_velocity.z)
+	var motion: Vector3 = velocity * delta
+	if was_on_floor and vertical_velocity <= 0.0:
+		motion.y = 0.0
+	if motion.length_squared() == 0.0:
+		zombie.manager_apply_transform(zombie.global_transform, dir, vertical_velocity, zombie.manager_is_on_floor())
+		return
+	var new_transform: Transform3D = zombie.global_transform
+	var on_floor := was_on_floor
+	if perform_collision:
+		var params: PhysicsTestMotionParameters3D = PhysicsTestMotionParameters3D.new()
+		params.from = zombie.global_transform
+		params.motion = motion
+		params.margin = collision_margin
+		var result: PhysicsTestMotionResult3D = PhysicsTestMotionResult3D.new()
+		var collided: bool = PhysicsServer3D.body_test_motion(zombie.get_rid(), params, result)
+		var travel: Vector3 = motion
+		if collided:
+			travel = result.get_travel()
+			var collision_count := result.get_collision_count()
+			for j in range(collision_count):
+				var normal: Vector3 = result.get_collision_normal(j)
+				if normal.dot(Vector3.UP) > 0.6:
+					on_floor = true
+					break
+			if on_floor and vertical_velocity < 0.0:
+				vertical_velocity = 0.0
+		else:
+			if vertical_velocity < 0.0:
+				on_floor = false
+		new_transform.origin += travel
+	else:
+		new_transform.origin += motion
+		on_floor = false
+	if dir.length_squared() > 0.0001:
+		new_transform = new_transform.looking_at(new_transform.origin + dir, Vector3.UP)
+	PhysicsServer3D.body_set_state(zombie.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, new_transform)
+	zombie.manager_apply_transform(new_transform, dir, vertical_velocity, on_floor)

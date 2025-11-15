@@ -4,6 +4,7 @@ class_name Zombie
 var blood_decal = preload("res://Assets/Decal/Blood.png")
 const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.gd")
 @export var gravity_scale := 10.0
+@export var walk_animation_name := "walk"
 
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
@@ -23,6 +24,7 @@ var _is_on_floor := false
 
 func _ready() -> void:
 	target = get_node_or_null(target_path)
+	call_deferred("_randomize_walk_animation")
 	if ZombieManagerClass.instance:
 		ZombieManagerClass.instance.register_zombie(self)
 	else:
@@ -68,6 +70,25 @@ func manager_get_gravity() -> float:
 
 func manager_get_move_direction() -> Vector3:
 	return _move_direction
+
+func _randomize_walk_animation() -> void:
+	if animation_player == null:
+		return
+	var anim_name := animation_player.current_animation
+	if anim_name == "" and walk_animation_name != "":
+		anim_name = walk_animation_name
+		if anim_name != "":
+			animation_player.play(anim_name)
+	if anim_name == "":
+		return
+	var animation: Animation = animation_player.get_animation(anim_name)
+	if animation == null:
+		return
+	var length: float = animation.length
+	if length <= 0.0:
+		return
+	var offset: float = randf() * length
+	animation_player.seek(offset, true)
 
 func spawn_blood(hit_position: Vector3, hit_normal: Vector3):
 	var blood_emitter = blood_emitter_scene.instantiate()

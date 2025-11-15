@@ -96,6 +96,7 @@ spawn_path = NodePath("../Zombies")
 unique_name_in_owner = true
 script = ExtResource("10_ng1ea")
 collisions_per_frame = 32
+collision_margin = 0.01
 
 [node name="WorldSpawner" type="Node3D" parent="." node_paths=PackedStringArray("terrain_manager")]
 script = ExtResource("10_kuxid")

@@ -37,7 +37,7 @@ var micro_data = {}
 var _goals_noise: FastNoiseLite
 var _micro_noise: FastNoiseLite
 var _spawned_goals: Dictionary = {}  # key = macro cell coords
-var _spawned_micro_objects: Dictionary = {}   # key = chunk_pos -> [nodes]
+var _spawned_micro_objects: Dictionary = {}   # keys = chunk_pos -> [nodes]
 var player: Truck = null
 
 func _ready():
@@ -218,13 +218,10 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 	var chunk_size = tm.chunk_size
 	var world_origin = Vector2(chunk_pos.x * chunk_size, chunk_pos.y * chunk_size)
 	var objects = []
-
-	# wait 2 frames to ensure terrain collision is ready
-	await get_tree().process_frame
-	await get_tree().process_frame
-
-	for x in range(0, chunk_size, 4):
-		for z in range(0, chunk_size, 4):
+	var rng = RandomNumberGenerator.new()
+	rng.seed = world_seed + hash(chunk_pos)
+	for x in range(0, chunk_size, 8):
+		for z in range(0, chunk_size, 8):
 			var wx = int(world_origin.x + x)
 			var wz = int(world_origin.y + z)
 			var pos_key = Vector2i(wx, wz)
@@ -253,9 +250,11 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 			var picked_scene: PackedScene
 
 			if not micro_data.has(pos_key):
-				picked_scene = micro_scenes.pick_random()
+				rng.seed = world_seed + hash(chunk_pos)
+				var random_index = rng.randi_range(0, micro_scenes.size() - 1)
+				picked_scene = micro_scenes[random_index]
 				obj = picked_scene.instantiate()
-				obj.rotation.y = randf_range(0.0, TAU)
+				obj.rotation.y = rng.randf_range(0.0, TAU)
 				#obj.position = Vector3(wx, y - 0.5, wz)
 				# inside _spawn_micro_objects_for_chunk
 				var local_x = wx - world_origin.x

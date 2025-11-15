@@ -19,6 +19,11 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 MultiplayerManager="*res://Multiplayer/MultiplayerManager.gd"
 WeaponList="*res://Weapon/WeaponList.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [editor]
 
 movie_writer/movie_file="D:/Projects/LudoLongJam2025/Demo.avi"

@@ -1,13 +1,27 @@
 extends Node3D
 class_name ZombieManager
 
+var zombie_scene = preload("res://Scenes/Enemies/Zombie/Zombie.tscn")
+
 @export_range(0, 512, 1) var collisions_per_frame := 0
 @export var collision_margin := 0.05
+
+@export var min_zombie_spawn_distance := 50.0
+@export var max_zombie_spawn_distance := 150.0
+
+@export var spawn_rate_curve: Curve
+@export var spawn_cooldown_curve: Curve
+
+var zombie_spawn_cooldown := 0.0
+
+@export var player: Node3D
 
 static var instance: ZombieManager
 
 var _zombies: Array[Zombie] = []
 var _next_index: int = 0
+
+var elapsed_time := 0.0
 
 func _ready() -> void:
 	if instance and instance != self:
@@ -41,6 +55,15 @@ func unregister_zombie(zombie: Zombie) -> void:
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
+	elapsed_time += delta
+	zombie_spawn_cooldown -= delta
+	
+	var max_zombies = spawn_rate_curve.sample(elapsed_time / 60)
+	if _zombies.size() < max_zombies:
+		if zombie_spawn_cooldown <= 0:
+			spawn_zombie()
+			zombie_spawn_cooldown = spawn_cooldown_curve.sample(elapsed_time / 60)
+	
 	if _zombies.is_empty():
 		return
 	var total: int = _zombies.size()
@@ -120,3 +143,32 @@ func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> vo
 		new_transform = new_transform.looking_at(new_transform.origin + dir, Vector3.UP)
 	PhysicsServer3D.body_set_state(zombie.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, new_transform)
 	zombie.manager_apply_transform(new_transform, dir, vertical_velocity, on_floor)
+
+
+func spawn_zombie():
+	var zombie = zombie_scene.instantiate()
+	add_child(zombie, true)
+	zombie.global_position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))
+
+# Function to pick a random point within a radius around this node
+func get_random_point_within_radius(radius: float = 20.0) -> Vector3:
+	# Pick a random direction on the XZ plane
+	var angle = randf() * TAU
+	var offset = Vector3(cos(angle) * radius, 0, sin(angle) * radius)
+	
+	var result_position = player.global_position + offset
+	
+	# precise terrain surface using raycast
+	var start = Vector3(result_position.x, result_position.y + 200.0, result_position.z)
+	var end = Vector3(result_position.x, result_position.y - 500.0, result_position.z)
+	var query = PhysicsRayQueryParameters3D.create(start, end)
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+	query.collision_mask = 1 << 0  # terrain layer
+	var result = get_world_3d().direct_space_state.intersect_ray(query)
+	if result and result.has("position"):
+		result_position.y = result.position.y
+	else:
+		result_position.y -= 2.0  # fallback correction
+	
+	return result_position

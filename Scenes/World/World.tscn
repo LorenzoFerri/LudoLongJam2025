@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bow45h53alwmo"]
+[gd_scene load_steps=18 format=3 uid="uid://bow45h53alwmo"]
 
 [ext_resource type="PackedScene" uid="uid://bdylrsie22fbj" path="res://Scenes/Player/Truck/Truck.tscn" id="1_folwd"]
 [ext_resource type="Script" uid="uid://cv51dkhpyy8if" path="res://Scenes/World/World.gd" id="1_s53j1"]
@@ -55,6 +55,16 @@ heightmap_min_layers = 8
 heightmap_max_layers = 32
 heightmap_texture = ExtResource("6_s53j1")
 
+[sub_resource type="Curve" id="Curve_ng1ea"]
+_limits = [5.0, 200.0, 0.0, 30.0]
+_data = [Vector2(0, 5), 0.0, 16.093307, 0, 0, Vector2(30, 200), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_0d0er"]
+_limits = [0.1, 5.0, 0.0, 30.0]
+_data = [Vector2(0, 5), 0.0, -0.1345873, 0, 0, Vector2(30, 0.1), -0.16812922, 0.0, 0, 0]
+point_count = 2
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_s53j1")
 
@@ -92,11 +102,14 @@ layer3_amplitude = 1.0
 _spawnable_scenes = PackedStringArray("uid://cjyer75whv2sk")
 spawn_path = NodePath("../Zombies")
 
-[node name="Zombies" type="Node3D" parent="."]
+[node name="Zombies" type="Node3D" parent="." node_paths=PackedStringArray("player")]
 unique_name_in_owner = true
 script = ExtResource("10_ng1ea")
 collisions_per_frame = 32
 collision_margin = 0.01
+spawn_rate_curve = SubResource("Curve_ng1ea")
+spawn_cooldown_curve = SubResource("Curve_0d0er")
+player = NodePath("../Truck")
 
 [node name="WorldSpawner" type="Node3D" parent="." node_paths=PackedStringArray("terrain_manager")]
 script = ExtResource("10_kuxid")

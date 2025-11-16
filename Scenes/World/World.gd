@@ -27,12 +27,12 @@ func _on_player_loaded() -> void:
 
 func start_game() -> void:
 	pass
-	#for i in range(100):
-		#var zombie_instance = zombie_scene.instantiate()
-		#zombie_instance.target_path = truck.get_path()
-		#zombies.add_child(zombie_instance, true)
-		#zombie_instance.global_transform.origin = Vector3(
-			#randf_range(-20, 20),
-			#0,
-			#randf_range(-20, 20)
-		#) + marker.position
+	# for i in range(100):
+	# 	var zombie_instance = zombie_scene.instantiate()
+	# 	zombie_instance.target_path = truck.get_path()
+	# 	zombies.add_child(zombie_instance, true)
+	# 	zombie_instance.global_transform.origin = Vector3(
+	# 		randf_range(-20, 20),
+	# 		0,
+	# 		randf_range(-20, 20)
+	# 	) + marker.position

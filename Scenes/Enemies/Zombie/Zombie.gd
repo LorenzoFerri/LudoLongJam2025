@@ -9,7 +9,6 @@ const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.g
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
 @export_node_path var target_path: NodePath
-var target: Node3D
 @export_range(0.1, 10.0, 0.1) var speed := 3.0
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @export var dead = false
@@ -23,7 +22,6 @@ var _is_on_floor := false
 @onready var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity") * gravity_scale
 
 func _ready() -> void:
-	target = get_node_or_null(target_path)
 	call_deferred("_randomize_walk_animation")
 	if ZombieManagerClass.instance:
 		ZombieManagerClass.instance.register_zombie(self)
@@ -42,9 +40,6 @@ func _exit_tree() -> void:
 
 func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
 	spawn_blood(hit_position, hit_normal)
-
-func get_target() -> Node3D:
-	return target
 
 func manager_apply_transform(new_transform: Transform3D, direction: Vector3, vertical_velocity: float, on_floor: bool) -> void:
 	global_transform = new_transform
@@ -124,8 +119,8 @@ func die():
 	collision_shape_3d.set_deferred("disabled", true)
 	physical_bone_simulator_3d.set_deferred("active", true)
 	physical_bone_simulator_3d.call_deferred("physical_bones_start_simulation")
-	if ZombieManagerClass.instance:
-		ZombieManagerClass.instance.unregister_zombie(self)
+	# if ZombieManagerClass.instance:
+	# 	ZombieManagerClass.instance.unregister_zombie(self)
 
 func _on_health_component_death() -> void:
 	die.rpc()

@@ -53,6 +53,7 @@ func unregister_zombie(zombie: Zombie) -> void:
 	_next_index = clamp(_next_index, 0, max(0, _zombies.size() - 1))
 
 func _physics_process(delta: float) -> void:
+	print(_zombies.size())
 	if not multiplayer.is_server():
 		return
 	elapsed_time += delta
@@ -72,7 +73,7 @@ func _physics_process(delta: float) -> void:
 		limit = total
 	else:
 		limit = min(collisions_per_frame, total)
-	for i in range(total):
+	for i in range(total - 1, -1, -1):
 		var index := (_next_index + i) % total
 		var zombie: Zombie = _zombies[index]
 		var run_collision := i < limit
@@ -83,14 +84,17 @@ func _physics_process(delta: float) -> void:
 
 func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> void:
 	if zombie.dead:
-		return
-	var target: Node3D = zombie.get_target()
+		unregister_zombie(zombie)
+		zombie.queue_free()
 	if not zombie.is_inside_tree():
 		return
+	if zombie.position.distance_to(player.position) > max_zombie_spawn_distance * 1.5:
+		unregister_zombie(zombie)
+		zombie.queue_free()
 	var origin: Vector3 = zombie.global_transform.origin
 	var dir: Vector3 = zombie.manager_get_move_direction()
-	if target != null:
-		var target_pos: Vector3 = target.global_transform.origin
+	if player != null:
+		var target_pos: Vector3 = player.global_transform.origin
 		var to_target: Vector3 = target_pos - origin
 		to_target.y = 0.0
 		var dist_sq: float = to_target.length_squared()
@@ -99,11 +103,11 @@ func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> vo
 	var gravity_force: float = zombie.manager_get_gravity()
 	var vertical_velocity: float = zombie.manager_get_vertical_velocity()
 	var was_on_floor := zombie.manager_is_on_floor()
-	if was_on_floor:
-		if vertical_velocity < 0.0:
-			vertical_velocity = 0.0
-	else:
-		vertical_velocity -= gravity_force * delta
+	# if was_on_floor:
+	# 	if vertical_velocity < 0.0:
+	# 		vertical_velocity = 0.0
+	# else:
+	vertical_velocity -= gravity_force * delta
 	var horizontal_velocity: Vector3 = dir * zombie.speed
 	var velocity: Vector3 = Vector3(horizontal_velocity.x, vertical_velocity, horizontal_velocity.z)
 	var motion: Vector3 = velocity * delta
@@ -146,9 +150,9 @@ func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> vo
 
 
 func spawn_zombie():
-	var zombie = zombie_scene.instantiate()
+	var zombie: Zombie = zombie_scene.instantiate()
+	zombie.position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))
 	add_child(zombie, true)
-	zombie.global_position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))
 
 # Function to pick a random point within a radius around this node
 func get_random_point_within_radius(radius: float = 20.0) -> Vector3:

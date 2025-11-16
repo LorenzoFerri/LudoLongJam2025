@@ -105,7 +105,7 @@ spawn_path = NodePath("../Zombies")
 [node name="Zombies" type="Node3D" parent="." node_paths=PackedStringArray("player")]
 unique_name_in_owner = true
 script = ExtResource("10_ng1ea")
-collisions_per_frame = 32
+collisions_per_frame = 16
 collision_margin = 0.01
 spawn_rate_curve = SubResource("Curve_ng1ea")
 spawn_cooldown_curve = SubResource("Curve_0d0er")

@@ -33,11 +33,25 @@ var goals_data = {}
 @export var micro_threshold: float = 0.67
 var micro_data = {}
 
+@export var fuel_threshold: float = 0.70
+@export var fuel_noise_frequency: float = 0.02
+var fuel_scene = preload("res://Scenes/Collectibles/Fuel.tscn")
+var fuel_data = {}
+
+@export var packages_threshold: float = 0.67
+@export var packages_noise_frequency: float = 0.02
+var packages_scenes = [preload("res://Scenes/Collectibles/Packages.tscn")]
+var packages_data = {}
+
 # Internal data
 var _goals_noise: FastNoiseLite
 var _micro_noise: FastNoiseLite
+var _fuel_noise: FastNoiseLite
+var _packages_noise: FastNoiseLite
 var _spawned_goals: Dictionary = {}  # key = macro cell coords
 var _spawned_micro_objects: Dictionary = {}   # keys = chunk_pos -> [nodes]
+var _spawned_fuel: Dictionary = {}
+var _spawned_packages: Dictionary = {}
 var player: Truck = null
 
 func _ready():
@@ -48,7 +62,9 @@ func _ready():
 	player = terrain_manager.player
 
 	terrain_manager.chunk_loaded.connect(_on_chunk_loaded)
-	terrain_manager.chunk_unloaded.connect(_on_chunk_unloaded)
+	terrain_manager.chunk_unloaded.connect(func(chunk_pos):
+		_on_chunk_unloaded(chunk_pos, _spawned_micro_objects, micro_data)
+	)
 	
 	world_seed = terrain_manager.noise_seed
 	seed(world_seed + 123)
@@ -70,29 +86,31 @@ func _process(delta: float) -> void:
 
 
 func _on_chunk_loaded(chunk_pos: Vector2i, _chunk: Node3D):
-	_spawn_micro_objects_for_chunk(chunk_pos)
+	_spawn_objects_for_chunk(chunk_pos, _micro_noise, micro_threshold, micro_scenes, micro_data, _spawned_micro_objects)
+	_spawn_objects_for_chunk(chunk_pos, _fuel_noise, fuel_threshold, [fuel_scene], fuel_data, _spawned_fuel)
+	_spawn_objects_for_chunk(chunk_pos, _packages_noise, packages_threshold, packages_scenes, packages_data, _spawned_packages)
 
 
-func _on_chunk_unloaded(chunk_pos: Vector2i):
-	if not _spawned_micro_objects.has(chunk_pos):
+func _on_chunk_unloaded(chunk_pos: Vector2i, spawned_objects, data):
+	if not spawned_objects.has(chunk_pos):
 		return
 
 	var chunk_size = terrain_manager.chunk_size
 	var world_origin = Vector2i(chunk_pos.x * chunk_size, chunk_pos.y * chunk_size)
 
 	# Remove the actual nodes
-	for obj in _spawned_micro_objects[chunk_pos]:
+	for obj in spawned_objects[chunk_pos]:
 		if is_instance_valid(obj):
 			obj.queue_free()
 
-	_spawned_micro_objects.erase(chunk_pos)
+	spawned_objects.erase(chunk_pos)
 
 	# Clean micro_data entries for this chunk area
 	for x in range(0, chunk_size, 4):
 		for z in range(0, chunk_size, 4):
 			var wx = world_origin.x + x
 			var wz = world_origin.y + z
-			micro_data.erase(Vector2i(wx, wz))
+			data.erase(Vector2i(wx, wz))
 
 
 func _setup_noise():
@@ -102,9 +120,19 @@ func _setup_noise():
 	_goals_noise.frequency = 1.0 / float(goals_cell_size)
 
 	_micro_noise = FastNoiseLite.new()
-	_micro_noise.seed = world_seed + 9999
+	_micro_noise.seed = world_seed + 1
 	_micro_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
 	_micro_noise.frequency = micro_noise_frequency
+
+	_fuel_noise = FastNoiseLite.new()
+	_fuel_noise.seed = world_seed + 2
+	_fuel_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	_fuel_noise.frequency = fuel_noise_frequency
+
+	_packages_noise = FastNoiseLite.new()
+	_packages_noise.seed = world_seed + 3
+	_packages_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	_packages_noise.frequency = packages_noise_frequency
 
 
 func _spawn_goals_around_player(radius_in_cells: int = 5):
@@ -209,7 +237,7 @@ func _unload_goals_far_from_player(despawn_range: float = 10.0):
 			_spawned_goals.erase(cell_coords)
 
 	
-func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
+func _spawn_objects_for_chunk(chunk_pos: Vector2i, noise, threshold, scenes, data, spawned_dictionary):
 	var tm = terrain_manager
 	if not tm.loaded_chunks.has(chunk_pos):
 		return
@@ -226,8 +254,8 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 			var wz = int(world_origin.y + z)
 			var pos_key = Vector2i(wx, wz)
 
-			var n = _micro_noise.get_noise_2d(wx, wz)
-			if n <= micro_threshold:
+			var n = noise.get_noise_2d(wx, wz)
+			if n <= threshold:
 				continue
 
 			# initial guess
@@ -249,14 +277,21 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 			var obj: Node3D
 			var picked_scene: PackedScene
 
-			if not micro_data.has(pos_key):
+			if not data.has(pos_key):
 				rng.seed = world_seed + hash(chunk_pos)
-				var random_index = rng.randi_range(0, micro_scenes.size() - 1)
-				picked_scene = micro_scenes[random_index]
+				var random_index = rng.randi_range(0, scenes.size() - 1)
+				picked_scene = scenes[random_index]
 				obj = picked_scene.instantiate()
 				obj.rotation.y = rng.randf_range(0.0, TAU)
+				
+				if obj.has_signal("picked_up"):
+					obj.picked_up.connect(func():
+						data[pos_key]["picked_up"] = true
+						obj.queue_free()
+					)
+				
 				#obj.position = Vector3(wx, y - 0.5, wz)
-				# inside _spawn_micro_objects_for_chunk
+				# inside _spawn_objects_for_chunk
 				var local_x = wx - world_origin.x
 				var local_z = wz - world_origin.y
 				obj.position = Vector3(local_x, y - 1.0, local_z)
@@ -264,22 +299,32 @@ func _spawn_micro_objects_for_chunk(chunk_pos: Vector2i):
 				chunk.add_child(obj, true)
 				objects.append(obj)
 
-				micro_data[pos_key] = {
+				data[pos_key] = {
+					"position": obj.position,
 					"picked_scene": picked_scene,
 					"rotation": obj.rotation,
-					"custom": {"was_reached": false}
+					"picked_up": false
 				}
 			else:
-				var data = micro_data[pos_key]
-				picked_scene = data.picked_scene
+				var current_data = data[pos_key]
+				if current_data["picked_up"] == true:
+					continue
+					
+				picked_scene = current_data.picked_scene
 				obj = picked_scene.instantiate()
-				obj.position = Vector3(wx, y - 0.5, wz)
-				obj.rotation = data.rotation
+				obj.position = current_data.position
+				obj.rotation = current_data.rotation
+				
+				if obj.has_signal("picked_up"):
+					obj.picked_up.connect(func():
+						data[pos_key]["picked_up"] = true
+						obj.queue_free()
+					)
 
 				chunk.add_child(obj, true)
 				objects.append(obj)
 
-	_spawned_micro_objects[chunk_pos] = objects
+	spawned_dictionary[chunk_pos] = objects
 
 
 func get_closest_goal(player_pos: Vector3) -> Vector3:

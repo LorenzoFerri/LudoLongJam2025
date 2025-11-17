@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" load_steps=7 format=3 uid="uid://dpila2n7ytgp5"]
+
+[ext_resource type="Texture2D" uid="uid://cmdtq1pr4gfsf" path="res://Assets/Packages/Textures/Sci-fi_Container_Base_Color.png" id="1_itwq8"]
+[ext_resource type="Texture2D" uid="uid://b7ad5p72u22vu" path="res://Assets/Packages/Textures/Sci-fi_Container_Mixed_AO.png" id="2_13atn"]
+[ext_resource type="Texture2D" uid="uid://byqprt0hekjag" path="res://Assets/Packages/Textures/Sci-fi_Container_Emissive.png" id="3_porfd"]
+[ext_resource type="Texture2D" uid="uid://cs8btrxps3gxn" path="res://Assets/Packages/Textures/Sci-fi_Container_Metallic.png" id="4_w43qb"]
+[ext_resource type="Texture2D" uid="uid://wmoieippmdax" path="res://Assets/Packages/Textures/Sci-fi_Containerl_Normal_DirectX.png" id="5_itwq8"]
+[ext_resource type="Texture2D" uid="uid://do0f38ffgud4m" path="res://Assets/Packages/Textures/Sci-fi_Container_Roughness.png" id="6_vmkk2"]
+
+[resource]
+resource_name = "Материал"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+albedo_texture = ExtResource("1_itwq8")
+metallic = 1.0
+metallic_texture = ExtResource("4_w43qb")
+roughness_texture = ExtResource("6_vmkk2")
+emission_enabled = true
+emission_texture = ExtResource("3_porfd")
+normal_enabled = true
+normal_scale = 0.0
+normal_texture = ExtResource("5_itwq8")
+ao_enabled = true
+ao_texture = ExtResource("2_13atn")

@@ -53,7 +53,6 @@ func unregister_zombie(zombie: Zombie) -> void:
 	_next_index = clamp(_next_index, 0, max(0, _zombies.size() - 1))
 
 func _physics_process(delta: float) -> void:
-	print(_zombies.size())
 	if not multiplayer.is_server():
 		return
 	elapsed_time += delta

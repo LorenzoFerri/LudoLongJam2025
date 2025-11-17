@@ -15,6 +15,7 @@ class_name Truck
 @onready var weapon_position: Marker3D = $WeaponPosition
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
 
+@onready var score_label: Label = %ScoreLabel
 @onready var fuel_bar: ProgressBar = $CanvasLayer/FuelBar
 
 @export var STARTING_FUEL := 25000.0
@@ -29,6 +30,13 @@ class_name Truck
 		fuel = clamp(fuel, 0, max_fuel)
 		fuel_bar.max_value = max_fuel
 @export var fuel_decay_rate := 1.0
+
+var current_score := 0.0:
+	set(value):
+		current_score = value
+		score_label.text = str(value)
+
+var money := 0.0
 
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
 

@@ -17,6 +17,8 @@ class_name Truck
 
 @onready var score_label: Label = %ScoreLabel
 @onready var fuel_bar: ProgressBar = $CanvasLayer/FuelBar
+@onready var shop_label: Label = %ShopLabel
+
 
 @export var STARTING_FUEL := 25000.0
 
@@ -53,6 +55,10 @@ func _ready() -> void:
 func _on_players_changed() -> void:
 	set_multiplayer_authority(MultiplayerManager.get_driver_id())
 	weapon.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
+
+
+func toggle_goal_interact_button(make_visible: bool):
+	shop_label.visible = make_visible
 
 
 func _process(delta: float) -> void:

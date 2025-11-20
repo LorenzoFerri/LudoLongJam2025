@@ -189,7 +189,7 @@ func _spawn_goal(cell_coords: Vector2i):
 		var instance = picked_scene.instantiate()
 		instance.position = world_pos
 		instance.rotation.y = randf_range(0.0, TAU)
-		instance.goal_reached.connect(func(): 
+		instance.goal_interacted.connect(func(): 
 			goals_data[cell_coords].was_reached = true
 			goal_process_cooldown = 0
 		)

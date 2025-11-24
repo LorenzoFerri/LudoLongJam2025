@@ -2,6 +2,8 @@ extends Control
 
 class_name ShopUI
 
+signal upgrade_bought(upgrade: Upgrade)
+
 var upgrade_card_scene = preload("res://Scenes/Shop/UpgradeCard.tscn")
 
 @onready var card_container: HBoxContainer = %CardContainer
@@ -22,6 +24,8 @@ func build_ui():
 		if i > 0:
 			var previous_card = card_container.get_child(i - 1)
 			node.focus_previous = previous_card.get_path()
+		
+		node.buy.connect(upgrade_bought.emit)
 			
 		card_container.add_child(node)
 	

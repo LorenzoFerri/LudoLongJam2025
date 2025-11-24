@@ -22,6 +22,7 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 
 MultiplayerManager="*res://Multiplayer/MultiplayerManager.gd"
 WeaponList="*res://Weapon/WeaponList.gd"
+PlayerState="*res://Scenes/Player/PlayerState.gd"
 
 [display]
 

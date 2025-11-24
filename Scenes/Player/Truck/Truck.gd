@@ -21,36 +21,12 @@ class_name Truck
 @onready var shop: ShopUI = $CanvasLayer/Shop
 
 
-
-@export var STARTING_FUEL := 25000.0
-
-@export var fuel: float = STARTING_FUEL:
-	set(value):
-		fuel = clamp(value, 0, max_fuel)
-		fuel_bar.value = value
-@export var max_fuel: float = STARTING_FUEL:
-	set(value):
-		max_fuel = value
-		fuel = clamp(fuel, 0, max_fuel)
-		fuel_bar.max_value = max_fuel
-@export var fuel_decay_rate := 1.0
-
-var current_score := 0.0:
-	set(value):
-		current_score = value
-		score_label.text = str(value)
-
-var money := 0.0
-
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
 
 var next_goal_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	MultiplayerManager.players_changed.connect(_on_players_changed)
-	
-	fuel = STARTING_FUEL
-	max_fuel = STARTING_FUEL
 	
 	_on_players_changed()
 
@@ -75,6 +51,10 @@ func _process(delta: float) -> void:
 	var RPM_left = abs(rear_left_wheel.get_rpm())
 	var RPM_right = abs(rear_right_wheel.get_rpm())
 	
+	fuel_bar.value = PlayerState.fuel
+	fuel_bar.max_value = PlayerState.max_fuel
+	score_label.text = str(PlayerState.money)
+	
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
 		camera.current = true
 		var direction =  Input.get_action_strength("brake") - Input.get_action_strength("accelerate")
@@ -85,7 +65,7 @@ func _process(delta: float) -> void:
 		engine_force = torque
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
-		fuel -= abs(engine_force) * fuel_decay_rate * delta
+		PlayerState.fuel -= abs(engine_force) * PlayerState.fuel_decay_rate * delta
 
 		if direction == 0: brake = 2
 		

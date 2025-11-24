@@ -6,6 +6,16 @@ var effects: Array[Effect] = []
 var weapon: Weapon = null
 var condition: Condition = null
 
+func get_price():
+	var result = 0
+	for e in effects:
+		result += e.price
+	
+	if condition:
+		result += condition.price
+	
+	return result
+
 
 class Condition:
 	var name: String
@@ -31,6 +41,7 @@ class SpeedCondition extends Condition:
 		result.value = randf_range(50, 200)
 		result.greaterThan = randi_range(0, 2) == 1
 		result.name = "Speed Limit"
+		result.price = randi_range(100, 400)
 		
 		return result
 	
@@ -55,6 +66,7 @@ class EveryNShotCondition extends Condition:
 		
 		result.frequency = randf_range(2, 5)
 		result.name = "Hit counter"
+		result.price = randi_range(100, 400)
 		
 		return result
 	
@@ -82,6 +94,7 @@ class DamageModifier extends Effect:
 		effect.flatValue = randi_range(2, 10)
 		effect.percentageValue = randi_range(5, 20)
 		effect.name = "Damage Increase"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:
@@ -107,6 +120,7 @@ class SpeedModifier extends Effect:
 		effect.flatValue = randi_range(-4, 10)
 		effect.percentageValue = randi_range(-5, 20)
 		effect.name = "Speed Increase"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:
@@ -132,6 +146,7 @@ class FuelModifier extends Effect:
 		effect.flatValue = randi_range(-4, 10)
 		effect.percentageValue = randi_range(-5, 20)
 		effect.name = "Fuel Increase"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:
@@ -157,6 +172,7 @@ class ArmorModifier extends Effect:
 		effect.flatValue = randi_range(-4, 10)
 		effect.percentageValue = randi_range(-5, 20)
 		effect.name = "Improved Fuel Tank"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:
@@ -182,6 +198,7 @@ class ExplodingBullets extends Effect:
 		effect.radius = randi_range(2, 10)
 		effect.damage = randi_range(1, 6)
 		effect.name = "Exploding Bullets"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:
@@ -196,6 +213,7 @@ class FireTrail extends Effect:
 		effect.time = randi_range(2, 10)
 		effect.damage = randi_range(1, 4)
 		effect.name = "Fire Trail"
+		effect.price = randi_range(100, 400)
 		return effect
 	
 	func build_description() -> String:

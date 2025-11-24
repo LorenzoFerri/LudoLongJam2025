@@ -33,7 +33,6 @@ func _process(delta: float) -> void:
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Truck and not was_taken:
-		var truck: Truck = body
 		was_taken = true
-		truck.current_score += score_gain
+		PlayerState.money += score_gain
 		picked_up.emit()

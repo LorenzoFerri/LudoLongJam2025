@@ -1,10 +1,11 @@
-[gd_scene load_steps=41 format=4 uid="uid://bdylrsie22fbj"]
+[gd_scene load_steps=42 format=4 uid="uid://bdylrsie22fbj"]
 
 [ext_resource type="Script" uid="uid://cb1d68tv6df13" path="res://Scenes/Player/Truck/Truck.gd" id="1_wasro"]
 [ext_resource type="Material" uid="uid://bn4catggyg8nl" path="res://Assets/Truck/Material.tres" id="2_wasro"]
 [ext_resource type="Script" uid="uid://8f5088rurkrt" path="res://Scenes/Player/Camera.gd" id="3_2oony"]
 [ext_resource type="Texture2D" uid="uid://ct3nsw6afbw1s" path="res://Scenes/World/Texture/—Pngtree—sand cloud realistic texture_6688638.png" id="3_lh4vc"]
 [ext_resource type="PackedScene" uid="uid://cr5elbqtrx0ek" path="res://Scenes/Player/Shooter/Shooter.tscn" id="5_ccxdk"]
+[ext_resource type="PackedScene" uid="uid://wdlpq6fxbtfc" path="res://Scenes/Shop/Shop.tscn" id="6_a3vf4"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vcd85"]
 _surfaces = [{
@@ -725,3 +726,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 32
 text = "Press E to shop"
+
+[node name="Shop" parent="CanvasLayer" instance=ExtResource("6_a3vf4")]
+visible = false

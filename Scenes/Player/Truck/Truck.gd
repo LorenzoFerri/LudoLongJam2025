@@ -18,6 +18,8 @@ class_name Truck
 @onready var score_label: Label = %ScoreLabel
 @onready var fuel_bar: ProgressBar = $CanvasLayer/FuelBar
 @onready var shop_label: Label = %ShopLabel
+@onready var shop: ShopUI = $CanvasLayer/Shop
+
 
 
 @export var STARTING_FUEL := 25000.0
@@ -63,6 +65,10 @@ func toggle_goal_interact_button(make_visible: bool):
 
 func _process(delta: float) -> void:
 	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
+	
+	if shop.visible:
+		return
+	
 	weapon.position = weapon_position.global_position
 	weapon.rotation = weapon_position.global_rotation
 	weapon.rotate_object_local(Vector3.UP, -global_rotation.y)
@@ -117,3 +123,6 @@ func _process(delta: float) -> void:
 				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.SHOOTER)
 			else:
 				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.DRIVER)
+
+	if Input.is_action_pressed("interact") and shop_label.visible:
+		shop.show_shop()

@@ -1,5 +1,7 @@
 extends Button
 
+class_name UpgradeCard
+
 signal buy(upgrade: Upgrade)
 
 @export var upgrade: Upgrade
@@ -15,18 +17,18 @@ func _on_pressed() -> void:
 	buy.emit(upgrade)
 
 func build_ui():
-	var descText = ""
+	var descText = "[font_size=24]"
 	
 	if upgrade.condition != null:
-		descText += "[b][font_size=32]" + upgrade.condition.name + "[/font_size][/b]\n"
-		descText += upgrade.condition.build_description() + "\n"
+		descText += "[b][font_size=42]" + upgrade.condition.name + "[/font_size][/b]\n"
+		descText += upgrade.condition.build_description() + "\n\n"
 		
 	descText += "[ul]"
 	for effect in upgrade.effects:
-		descText += "[b][font_size=32]" + effect.name + "[/font_size][/b]\n"
-		descText += effect.build_description() + "\n"
+		descText += "[b][font_size=28]" + effect.name + "[/font_size][/b]\n[ul]"
+		descText += effect.build_description() + "\n[/ul]"
 	
 
-	descText += "[/ul]"
+	descText += "[/ul][/font_size]"
 	
 	description.text = descText

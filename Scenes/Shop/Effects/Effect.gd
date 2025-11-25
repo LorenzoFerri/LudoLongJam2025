@@ -14,7 +14,12 @@ static func build_random() -> Effect:
 
 func serialize() -> Dictionary:
 	var data: Dictionary = {}
-	data.type = get_class()
+	var script: Script = get_script()
+	if script and script.resource_path != "":
+		data.type = script.resource_path
+	else:
+		data.type = get_class()
+	data.class_name = get_class()
 	data.name = name
 	data.price = price
 	return data

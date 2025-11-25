@@ -31,18 +31,28 @@ const CONDITION_TYPES := [
 ]
 
 const EFFECT_DESERIALIZERS := {
+	EffectClass.resource_path: EffectClass,
 	"Effect": EffectClass,
+	DamageModifierClass.resource_path: DamageModifierClass,
 	"DamageModifier": DamageModifierClass,
+	SpeedModifierClass.resource_path: SpeedModifierClass,
 	"SpeedModifier": SpeedModifierClass,
+	FuelModifierClass.resource_path: FuelModifierClass,
 	"FuelModifier": FuelModifierClass,
+	ArmorModifierClass.resource_path: ArmorModifierClass,
 	"ArmorModifier": ArmorModifierClass,
+	ExplodingBulletsClass.resource_path: ExplodingBulletsClass,
 	"ExplodingBullets": ExplodingBulletsClass,
+	FireTrailClass.resource_path: FireTrailClass,
 	"FireTrail": FireTrailClass,
 }
 
 const CONDITION_DESERIALIZERS := {
+	ConditionClass.resource_path: ConditionClass,
 	"Condition": ConditionClass,
+	SpeedConditionClass.resource_path: SpeedConditionClass,
 	"SpeedCondition": SpeedConditionClass,
+	EveryNShotConditionClass.resource_path: EveryNShotConditionClass,
 	"EveryNShotCondition": EveryNShotConditionClass,
 }
 
@@ -86,16 +96,22 @@ static func deserialize(data: Dictionary) -> Upgrade:
 	return upgrade
 
 static func _deserialize_effect(data: Dictionary) -> Effect:
-	var type_name: String = data.get("type", "")
-	if type_name in EFFECT_DESERIALIZERS:
-		return EFFECT_DESERIALIZERS[type_name].deserialize(data)
-	return Effect.deserialize(data)
+	var type_identifier: String = data.get("type", "")
+	if type_identifier in EFFECT_DESERIALIZERS:
+		return EFFECT_DESERIALIZERS[type_identifier].deserialize(data)
+	var fallback: String = data.get("class_name", "")
+	if fallback in EFFECT_DESERIALIZERS:
+		return EFFECT_DESERIALIZERS[fallback].deserialize(data)
+	return EffectClass.deserialize(data)
 
 static func _deserialize_condition(data: Dictionary) -> Condition:
-	var type_name: String = data.get("type", "")
-	if type_name in CONDITION_DESERIALIZERS:
-		return CONDITION_DESERIALIZERS[type_name].deserialize(data)
-	return Condition.deserialize(data)
+	var type_identifier: String = data.get("type", "")
+	if type_identifier in CONDITION_DESERIALIZERS:
+		return CONDITION_DESERIALIZERS[type_identifier].deserialize(data)
+	var fallback: String = data.get("class_name", "")
+	if fallback in CONDITION_DESERIALIZERS:
+		return CONDITION_DESERIALIZERS[fallback].deserialize(data)
+	return ConditionClass.deserialize(data)
 
 static func get_random_upgrade() -> Upgrade:
 	var result := Upgrade.new()

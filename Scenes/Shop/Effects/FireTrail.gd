@@ -1,6 +1,8 @@
-extends Effect
+extends "res://Scenes/Shop/Effects/Effect.gd"
 
 class_name FireTrail
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var time: float = 5.0
 var damage: float = 2.0
@@ -17,8 +19,8 @@ func build_description() -> String:
 	return "Moving leaves a trail of fire that lasts [color={2}]{0}[/color] seconds and deals [color={3}]{1}[/color] damage per second.".format([
 		time,
 		damage,
-		UpgradeUtils.get_color(time),
-		UpgradeUtils.get_color(damage),
+		UpgradeUtilsClass.get_color(time),
+		UpgradeUtilsClass.get_color(damage),
 	])
 
 func serialize() -> Dictionary:

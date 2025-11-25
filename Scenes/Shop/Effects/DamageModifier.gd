@@ -1,6 +1,8 @@
-extends Effect
+extends "res://Scenes/Shop/Effects/Effect.gd"
 
 class_name DamageModifier
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var flatValue: float = 0.0
 var percentageValue: float = 0.0
@@ -16,14 +18,14 @@ static func build_random() -> Effect:
 func build_description() -> String:
 	var result := ""
 	if flatValue > 0:
-		result += "Increase damage by [color={1}]{0}[/color] per hit.\n".format([flatValue, UpgradeUtils.get_color(flatValue)])
+		result += "Increase damage by [color={1}]{0}[/color] per hit.\n".format([flatValue, UpgradeUtilsClass.get_color(flatValue)])
 	elif flatValue < 0:
-		result += "Decrease damage by [color={1}]{0}[/color] per hit.\n".format([flatValue, UpgradeUtils.get_color(flatValue)])
+		result += "Decrease damage by [color={1}]{0}[/color] per hit.\n".format([flatValue, UpgradeUtilsClass.get_color(flatValue)])
 
 	if percentageValue > 0:
-		result += "Increase damage by [color={1}]{0}[/color]% per hit.".format([percentageValue, UpgradeUtils.get_color(percentageValue)])
+		result += "Increase damage by [color={1}]{0}[/color]% per hit.".format([percentageValue, UpgradeUtilsClass.get_color(percentageValue)])
 	elif percentageValue < 0:
-		result += "Decrease damage by [color={1}]{0}[/color]% per hit.".format([percentageValue, UpgradeUtils.get_color(percentageValue)])
+		result += "Decrease damage by [color={1}]{0}[/color]% per hit.".format([percentageValue, UpgradeUtilsClass.get_color(percentageValue)])
 
 	return result
 

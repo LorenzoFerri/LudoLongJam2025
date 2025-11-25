@@ -1,6 +1,8 @@
-extends Effect
+extends "res://Scenes/Shop/Effects/Effect.gd"
 
 class_name ExplodingBullets
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var radius: float = 2.0
 var damage: float = 2.0
@@ -17,8 +19,8 @@ func build_description() -> String:
 	return "Create an explosion on hit that deals [color={3}]{1}[/color] damage over an area of [color={2}]{0}[/color] meters.".format([
 		radius,
 		damage,
-		UpgradeUtils.get_color(radius),
-		UpgradeUtils.get_color(damage),
+		UpgradeUtilsClass.get_color(radius),
+		UpgradeUtilsClass.get_color(damage),
 	])
 
 func serialize() -> Dictionary:

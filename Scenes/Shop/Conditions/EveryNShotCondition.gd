@@ -1,6 +1,8 @@
-extends Condition
+extends "res://Scenes/Shop/Conditions/Condition.gd"
 
 class_name EveryNShotCondition
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var frequency: int
 
@@ -15,7 +17,7 @@ static func build_condition() -> Condition:
 	return result
 
 func build_description() -> String:
-	var color: String = UpgradeUtils.get_color(frequency)
+	var color: String = UpgradeUtilsClass.get_color(frequency)
 	return "Every [color={1}]{0}[/color] shots:".format([frequency, color])
 
 func serialize() -> Dictionary:

@@ -1,6 +1,8 @@
-extends Effect
+extends "res://Scenes/Shop/Effects/Effect.gd"
 
 class_name FuelModifier
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var flatValue: float = 0.0
 var percentageValue: float = 0.0
@@ -16,14 +18,14 @@ static func build_random() -> Effect:
 func build_description() -> String:
 	var result := ""
 	if flatValue > 0:
-		result += "Increase maximum fuel by [color={1}]{0}[/color] liters.\n".format([flatValue, UpgradeUtils.get_color(flatValue)])
+		result += "Increase maximum fuel by [color={1}]{0}[/color] liters.\n".format([flatValue, UpgradeUtilsClass.get_color(flatValue)])
 	elif flatValue < 0:
-		result += "Decrease maximum fuel by [color={1}]{0}[/color] liters.\n".format([flatValue, UpgradeUtils.get_color(flatValue)])
+		result += "Decrease maximum fuel by [color={1}]{0}[/color] liters.\n".format([flatValue, UpgradeUtilsClass.get_color(flatValue)])
 
 	if percentageValue > 0:
-		result += "Increase maximum fuel by [color={1}]{0}[/color]%.".format([percentageValue, UpgradeUtils.get_color(percentageValue)])
+		result += "Increase maximum fuel by [color={1}]{0}[/color]%.".format([percentageValue, UpgradeUtilsClass.get_color(percentageValue)])
 	elif percentageValue < 0:
-		result += "Decrease maximum fuel by [color={1}]{0}[/color]%.".format([percentageValue, UpgradeUtils.get_color(percentageValue)])
+		result += "Decrease maximum fuel by [color={1}]{0}[/color]%.".format([percentageValue, UpgradeUtilsClass.get_color(percentageValue)])
 
 	return result
 

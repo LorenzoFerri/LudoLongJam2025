@@ -1,6 +1,8 @@
-extends Condition
+extends "res://Scenes/Shop/Conditions/Condition.gd"
 
 class_name SpeedCondition
+
+const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var greaterThan: bool
 var value: float
@@ -19,7 +21,7 @@ static func build_condition() -> Condition:
 	return result
 
 func build_description() -> String:
-	var color: String = UpgradeUtils.get_color(value)
+	var color: String = UpgradeUtilsClass.get_color(value)
 	if greaterThan:
 		return "When your speed is greater than [color={1}]{0}[/color]:".format([value, color])
 	return "When your speed is less than [color={1}]{0}[/color]:".format([value, color])

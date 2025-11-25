@@ -487,6 +487,9 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:brake")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath("CanvasLayer/Shop:visible")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [sub_resource type="PrismMesh" id="PrismMesh_ccxdk"]
 lightmap_size_hint = Vector2i(8, 19)
@@ -722,4 +725,3 @@ theme_override_font_sizes/font_size = 32
 text = "Press E to shop"
 
 [node name="Shop" parent="CanvasLayer" instance=ExtResource("6_a3vf4")]
-visible = false

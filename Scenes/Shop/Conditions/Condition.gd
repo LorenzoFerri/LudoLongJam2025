@@ -8,9 +8,17 @@ var price: float = 1000.0
 static func build_condition() -> Condition:
 	return null
 
+func build_description() -> String:
+	return ""
+
 func serialize() -> Dictionary:
 	var data: Dictionary = {}
-	data.type = get_class()
+	var script: Script = get_script()
+	if script and script.resource_path != "":
+		data.type = script.resource_path
+	else:
+		data.type = get_class()
+	data.class_name = get_class()
 	data.name = name
 	data.price = price
 	return data

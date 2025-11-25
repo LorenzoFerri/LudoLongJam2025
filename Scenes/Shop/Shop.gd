@@ -22,21 +22,29 @@ func build_ui():
 		var node: UpgradeCard = upgrade_card_scene.instantiate()
 		
 		node.upgrade = Upgrade.get_random_upgrade()
-		
 		if i > 0:
 			var previous_card = card_container.get_child(i - 1)
 			node.focus_previous = previous_card.get_path()
 		
-		node.buy.connect(upgrade_bought.emit)
+		node.buy.connect(func(upgrade):
+			buy_upgrade.rpc(upgrade.serialize())
+		)
 			
-		card_container.add_child(node, true)
+		card_container.add_child(node)
 	
 	card_container.get_child(0).grab_focus()
+
+@rpc("any_peer", "call_local")
+func buy_upgrade(upgrade_dict: Dictionary):
+	var upgrade = Upgrade.deserialize(upgrade_dict)
+	PlayerState.money -= upgrade.get_price()
+	PlayerState.upgrade_list.push_back(upgrade)
+	upgrade_bought.emit(upgrade)
 
 func show_shop():
 	refresh()
 	visible = true
-	Engine.time_scale = 0
+	Engine.time_scale = 0.1
 
 func _on_refresh_button_pressed() -> void:
 	refresh()

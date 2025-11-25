@@ -49,9 +49,5 @@ text = "Close"
 layout_mode = 2
 text = "Refresh"
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://dqxyrselqkbpo")
-spawn_path = NodePath("../PanelContainer/MarginContainer/VBoxContainer/CardContainer")
-
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]

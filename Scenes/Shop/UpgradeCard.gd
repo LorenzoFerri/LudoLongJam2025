@@ -20,8 +20,6 @@ func _on_pressed() -> void:
 	
 	buy.emit(upgrade)
 	disabled = true
-	PlayerState.money -= upgrade.get_price()
-	PlayerState.upgrade_list.push_back(upgrade)
 
 func build_ui():
 	if PlayerState.money < upgrade.get_price():

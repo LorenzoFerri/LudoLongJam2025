@@ -1,8 +1,6 @@
-extends "res://Scenes/Shop/Effects/Effect.gd"
+extends Effect
 
 class_name ExplodingBullets
-
-const UpgradeUtils = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var radius: float = 2.0
 var damage: float = 2.0

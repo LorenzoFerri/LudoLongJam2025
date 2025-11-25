@@ -1,8 +1,7 @@
-extends "res://Scenes/Shop/Effects/Effect.gd"
+extends Effect
 
 class_name ArmorModifier
 
-const UpgradeUtils = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var flatValue: float = 0.0
 var percentageValue: float = 0.0

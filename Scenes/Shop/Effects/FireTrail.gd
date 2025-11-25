@@ -1,8 +1,6 @@
-extends "res://Scenes/Shop/Effects/Effect.gd"
+extends Effect
 
 class_name FireTrail
-
-const UpgradeUtils = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var time: float = 5.0
 var damage: float = 2.0

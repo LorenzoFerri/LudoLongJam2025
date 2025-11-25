@@ -18,6 +18,7 @@ func _ready() -> void:
 func build_ui():
 	if not multiplayer.is_server():
 		return
+	var upgrade_dicts: Array = []
 	for i in range(card_number):
 		var node: UpgradeCard = upgrade_card_scene.instantiate()
 		
@@ -29,10 +30,18 @@ func build_ui():
 		node.buy.connect(func(upgrade):
 			buy_upgrade.rpc(upgrade.serialize())
 		)
-			
+		upgrade_dicts.append(node.upgrade.serialize())
 		card_container.add_child(node)
 	
-	card_container.get_child(0).grab_focus()
+	build_remote_ui.rpc(upgrade_dicts)
+	card_container.get_child(0).call_deferred("grab_focus")
+	
+@rpc("authority", "call_remote")
+func build_remote_ui(upgrade_dicts: Array):
+	for upgrade_dict in upgrade_dicts:
+		var node: UpgradeCard = upgrade_card_scene.instantiate()
+		node.upgrade = Upgrade.deserialize(upgrade_dict)
+		card_container.add_child(node)
 
 @rpc("any_peer", "call_local")
 func buy_upgrade(upgrade_dict: Dictionary):

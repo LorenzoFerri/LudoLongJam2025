@@ -1,8 +1,6 @@
-extends "res://Scenes/Shop/Conditions/Condition.gd"
+extends Condition
 
 class_name SpeedCondition
-
-const UpgradeUtils = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var greaterThan: bool
 var value: float

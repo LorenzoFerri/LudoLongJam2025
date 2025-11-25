@@ -1,8 +1,6 @@
-extends "res://Scenes/Shop/Conditions/Condition.gd"
+extends Condition
 
 class_name EveryNShotCondition
-
-const UpgradeUtils = preload("res://Scenes/Shop/UpgradeUtils.gd")
 
 var frequency: int
 

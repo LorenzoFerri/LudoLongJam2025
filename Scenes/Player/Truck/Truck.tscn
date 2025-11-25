@@ -487,12 +487,6 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:brake")
 properties/4/spawn = true
 properties/4/replication_mode = 1
-properties/5/path = NodePath(".:fuel")
-properties/5/spawn = true
-properties/5/replication_mode = 1
-properties/6/path = NodePath(".:max_fuel")
-properties/6/spawn = true
-properties/6/replication_mode = 1
 
 [sub_resource type="PrismMesh" id="PrismMesh_ccxdk"]
 lightmap_size_hint = Vector2i(8, 19)

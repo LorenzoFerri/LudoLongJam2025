@@ -16,6 +16,8 @@ func _ready() -> void:
 	build_ui()
 
 func build_ui():
+	if not multiplayer.is_server():
+		return
 	for i in range(card_number):
 		var node: UpgradeCard = upgrade_card_scene.instantiate()
 		
@@ -27,7 +29,7 @@ func build_ui():
 		
 		node.buy.connect(upgrade_bought.emit)
 			
-		card_container.add_child(node)
+		card_container.add_child(node, true)
 	
 	card_container.get_child(0).grab_focus()
 

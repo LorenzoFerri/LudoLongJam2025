@@ -62,10 +62,22 @@ func _process(delta: float) -> void:
 
 		var current_rpm = (RPM_left + RPM_right) / 2
 		var torque = direction * MAX_TORQUE * (1 - (current_rpm / MAX_RPM))
-		engine_force = torque
+		PlayerState.engine_force = torque
+		
+		if torque != 0:
+			var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
+			if speed_upgrades.size() != 0:
+				var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+				if torque > 0:
+					PlayerState.engine_force += flatValue
+				else:
+					PlayerState.engine_force -= flatValue
+				PlayerState.engine_force *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		
+		engine_force = PlayerState.engine_force
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
-		PlayerState.fuel -= abs(engine_force) * PlayerState.fuel_decay_rate * delta
+		PlayerState.fuel -= abs(PlayerState.engine_force) * PlayerState.fuel_decay_rate * delta
 
 		if direction == 0: brake = 2
 		
@@ -95,7 +107,7 @@ func _process(delta: float) -> void:
 		goal_arrow.visible = false
 		
 
-	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or engine_force < 0) and RPM_left > 5
+	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_left > 5
 
 	if Input.is_action_just_pressed("switch_roles"):
 		for player_id in MultiplayerManager.players.keys():

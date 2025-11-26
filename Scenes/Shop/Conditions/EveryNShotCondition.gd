@@ -7,7 +7,7 @@ const UpgradeUtilsClass = preload("res://Scenes/Shop/UpgradeUtils.gd")
 var frequency: int
 
 func check(total_shots: int) -> bool:
-	return frequency != 0 and total_shots % frequency == 0
+	return frequency != 0 and total_shots != 0 and total_shots % frequency == 0
 
 static func build_condition() -> Condition:
 	var result := EveryNShotCondition.new()

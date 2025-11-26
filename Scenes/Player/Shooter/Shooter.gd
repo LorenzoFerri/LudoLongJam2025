@@ -40,6 +40,7 @@ func _input(event: InputEvent) -> void:
 		z_rotation_control.rotation_degrees.y -= event.relative.x * 0.1
 
 func shoot():
+	PlayerState.shot_number += 1
 	spawn_bullet.rpc(shooting_raycast.global_position, shooting_raycast.to_global(shooting_raycast.target_position))
 	if shooting_raycast.is_colliding():
 		var collider = shooting_raycast.get_collider()

@@ -14,7 +14,7 @@ func check(speed: float) -> bool:
 
 static func build_condition() -> Condition:
 	var result := SpeedCondition.new()
-	result.value = randf_range(50, 200)
+	result.value = randf_range(10, 25)
 	result.greaterThan = randi_range(0, 2) == 1
 	result.name = "Speed Limit"
 	result.price = randi_range(100, 400)

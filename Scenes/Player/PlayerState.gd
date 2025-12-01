@@ -16,8 +16,8 @@ var money := 1000.0
 var upgrade_list: Array[Upgrade] = [debug_upgrade()]
 
 var shot_number: int = 0
-
 var engine_force: float = 0.0
+var current_speed: float = 0.0
 
 func debug_upgrade():
 	var result: Upgrade = Upgrade.new()

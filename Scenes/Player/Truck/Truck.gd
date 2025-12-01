@@ -6,6 +6,7 @@ class_name Truck
 @export var MAX_TORQUE := 300
 @export var TURN_SPEED := 3
 @export var TURN_AMOUNT := 0.4
+@export var MAX_SPEED_MPS = 30.0 # Target top speed in m/s
 
 @onready var rear_left_wheel: VehicleWheel3D = $RearLeftWheel
 @onready var rear_right_wheel: VehicleWheel3D = $RearRightWheel
@@ -60,15 +61,24 @@ func _process(delta: float) -> void:
 		var direction =  Input.get_action_strength("brake") - Input.get_action_strength("accelerate")
 		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
 
-		var current_rpm = (RPM_left + RPM_right) / 2
-		var torque = direction * MAX_TORQUE * (1 - (current_rpm / MAX_RPM))
-		PlayerState.engine_force = torque
+		#var current_rpm = (RPM_left + RPM_right) / 2
+		#var torque = direction * MAX_TORQUE * (1 - (current_rpm / MAX_RPM))
+		#PlayerState.engine_force = torque
 		
-		if torque != 0:
+		var current_speed = linear_velocity.dot(-global_transform.basis.z)
+		PlayerState.current_speed = current_speed
+		%Speed.text = str(floor(current_speed)) + "/" + str(MAX_SPEED_MPS)
+		var speed_factor = 1.0 - (current_speed / MAX_SPEED_MPS)
+		
+		speed_factor = clamp(speed_factor, 0.0, 1.0)
+		
+		PlayerState.engine_force = MAX_RPM * direction * speed_factor
+		
+		if current_speed != 0:
 			var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
 			if speed_upgrades.size() != 0:
 				var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
-				if torque > 0:
+				if current_speed > 0:
 					PlayerState.engine_force += flatValue
 				else:
 					PlayerState.engine_force -= flatValue

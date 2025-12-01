@@ -91,12 +91,16 @@ chunk_material = SubResource("StandardMaterial3D_04mge")
 chunk_resolution = 3
 chunk_render_distance = 16
 chunk_height = 50.0
+noise_scale = 0.01
+noise_octaves = 1
 noise_seed = 1
 layer1_scale = 0.002
-layer1_amplitude = 60.0
+layer1_amplitude = 40.0
 layer2_scale = 0.02
-layer3_scale = 0.1
+layer3_scale = 0.02
 layer3_amplitude = 1.0
+preview_chunks_x = 16
+preview_chunks_z = 16
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://cjyer75whv2sk")

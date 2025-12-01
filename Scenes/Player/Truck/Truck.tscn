@@ -510,9 +510,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6502088, 0.4, -1.3347225)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.4
+wheel_friction_slip = 2.0
 suspension_travel = 0.5
-suspension_stiffness = 100.0
-damping_compression = 1.0
+suspension_stiffness = 50.0
+damping_compression = 0.8
 damping_relaxation = 1.0
 
 [node name="Wheel" type="MeshInstance3D" parent="FrontRightWheel"]
@@ -526,9 +527,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65415454, 0.4, -1.3371735)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.4
+wheel_friction_slip = 2.0
 suspension_travel = 0.5
-suspension_stiffness = 100.0
-damping_compression = 1.0
+suspension_stiffness = 50.0
+damping_compression = 0.8
 damping_relaxation = 1.0
 
 [node name="Wheel" type="MeshInstance3D" parent="FrontLeftWheel"]
@@ -539,11 +541,11 @@ skeleton = NodePath("")
 [node name="RearRightWheel" type="VehicleWheel3D" parent="."]
 physics_interpolation_mode = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6502088, 0.4, 1.0559767)
-use_as_traction = true
 wheel_radius = 0.4
+wheel_friction_slip = 2.0
 suspension_travel = 0.5
-suspension_stiffness = 100.0
-damping_compression = 1.0
+suspension_stiffness = 50.0
+damping_compression = 0.8
 damping_relaxation = 1.0
 
 [node name="Wheel" type="MeshInstance3D" parent="RearRightWheel"]
@@ -554,11 +556,11 @@ skeleton = NodePath("")
 [node name="RearLeftWheel" type="VehicleWheel3D" parent="."]
 physics_interpolation_mode = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65415454, 0.4, 1.0535258)
-use_as_traction = true
 wheel_radius = 0.4
+wheel_friction_slip = 2.0
 suspension_travel = 0.5
-suspension_stiffness = 100.0
-damping_compression = 1.0
+suspension_stiffness = 50.0
+damping_compression = 0.8
 damping_relaxation = 1.0
 
 [node name="Wheel" type="MeshInstance3D" parent="RearLeftWheel"]

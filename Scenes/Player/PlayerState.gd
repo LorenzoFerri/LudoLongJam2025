@@ -9,6 +9,14 @@ extends Node
 	set(value):
 		max_fuel = value
 		fuel = clamp(fuel, 0, max_fuel)
+	get():
+		var result = max_fuel
+		var fuel_upgrades = PlayerState.get_active_effects_by_type("FuelModifier")
+		if fuel_upgrades.size() != 0:
+			result += fuel_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+			result *= 1 + fuel_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		return result
+	
 @export var fuel_decay_rate := 1.0
 
 @export var money := 1000.0
@@ -40,7 +48,7 @@ func debug_upgrade():
 	var cond: EveryNShotCondition = EveryNShotCondition.new()
 	cond.frequency = 3
 	result.condition = cond
-	var eff = DamageModifier.new()
+	var eff = FuelModifier.new()
 	eff.flatValue = 10000
 	eff.percentageValue = 100
 	result.effects = [eff]

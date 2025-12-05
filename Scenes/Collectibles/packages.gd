@@ -34,5 +34,6 @@ func _process(delta: float) -> void:
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Truck and not was_taken:
 		was_taken = true
-		PlayerState.money += score_gain
+		if multiplayer.is_server():
+			PlayerState.money += score_gain
 		picked_up.emit()

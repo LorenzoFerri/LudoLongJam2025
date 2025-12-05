@@ -46,7 +46,8 @@ func build_remote_ui(upgrade_dicts: Array):
 @rpc("any_peer", "call_local")
 func buy_upgrade(upgrade_dict: Dictionary):
 	var upgrade = Upgrade.deserialize(upgrade_dict)
-	PlayerState.money -= upgrade.get_price()
+	if multiplayer.is_server():
+		PlayerState.money -= upgrade.get_price()
 	PlayerState.upgrade_list.push_back(upgrade)
 	upgrade_bought.emit(upgrade)
 

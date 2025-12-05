@@ -11,13 +11,26 @@ extends Node
 		fuel = clamp(fuel, 0, max_fuel)
 @export var fuel_decay_rate := 1.0
 
-var money := 1000.0
+@export var money := 1000.0
 
 var upgrade_list: Array[Upgrade] = [debug_upgrade()]
 
-var shot_number: int = 0
-var engine_force: float = 0.0
-var current_speed: float = 0.0
+@export var shot_number: int = 0
+@export var engine_force: float = 0.0
+@export var current_speed: float = 0.0
+
+var synchronizer := MultiplayerSynchronizer.new()
+
+func _ready() -> void:
+	var config := SceneReplicationConfig.new()
+	
+	config.add_property(":shot_number")
+	config.add_property(":current_speed")
+	config.add_property(":money")
+	config.add_property(":fuel")
+	config.add_property(":max_fuel")
+	
+	synchronizer.replication_config = config
 
 func debug_upgrade():
 	var result: Upgrade = Upgrade.new()

@@ -30,117 +30,119 @@ class_name Truck
 var next_goal_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
-    MultiplayerManager.players_changed.connect(_on_players_changed)
-    
-    _on_players_changed()
+	MultiplayerManager.players_changed.connect(_on_players_changed)
+	
+	_on_players_changed()
 
 func _on_players_changed() -> void:
-    set_multiplayer_authority(MultiplayerManager.get_driver_id())
-    weapon.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
+	set_multiplayer_authority(MultiplayerManager.get_driver_id())
+	weapon.set_multiplayer_authority(MultiplayerManager.get_shooter_id())
 
 func toggle_goal_interact_button(make_visible: bool):
-    shop_label.visible = make_visible
+	shop_label.visible = make_visible
 
 func _process(delta: float) -> void:
-    camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
-    
-    if shop.visible:
-        return
-    
-    weapon.position = weapon_position.global_position
-    weapon.rotation = weapon_position.global_rotation
-    weapon.rotate_object_local(Vector3.UP, -global_rotation.y)
-    var RPM_left = abs(rear_left_wheel.get_rpm())
-    var RPM_right = abs(rear_right_wheel.get_rpm())
-    
-    fuel_bar.value = PlayerState.fuel
-    fuel_bar.max_value = PlayerState.max_fuel
-    score_label.text = str(PlayerState.money)
-    
-    if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
-        camera.current = true
-        
-        var throttle_input = Input.get_action_strength("accelerate")
-        var brake_input = Input.get_action_strength("brake")
-        var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
+	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
+	
+	if shop.visible:
+		return
+	
+	weapon.position = weapon_position.global_position
+	weapon.rotation = weapon_position.global_rotation
+	weapon.rotate_object_local(Vector3.UP, -global_rotation.y)
+	var RPM_left = abs(rear_left_wheel.get_rpm())
+	var RPM_right = abs(rear_right_wheel.get_rpm())
+	
+	fuel_bar.value = PlayerState.fuel
+	fuel_bar.max_value = PlayerState.max_fuel
+	score_label.text = str(PlayerState.money)
+	
+	var current_speed = linear_velocity.dot(-global_transform.basis.z)
+	if multiplayer.is_server():
+		PlayerState.current_speed = current_speed
+	
+	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
+		camera.current = true
+		
+		var throttle_input = Input.get_action_strength("accelerate")
+		var brake_input = Input.get_action_strength("brake")
+		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
 
-        var current_speed = linear_velocity.dot(-global_transform.basis.z)
-        PlayerState.current_speed = current_speed
-        # %Speed.text = str(floor(current_speed)) + "/" + str(MAX_SPEED_MPS)
-        %Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, MAX_SPEED_MPS * 3.6]
-        
-        engine_force = 0
-        brake = 0
+		# %Speed.text = str(floor(current_speed)) + "/" + str(MAX_SPEED_MPS)
+		%Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, MAX_SPEED_MPS * 3.6]
+		
+		engine_force = 0
+		brake = 0
 
-        if throttle_input > 0.0:
-            if current_speed < MAX_SPEED_MPS:
-                var speed_factor = 1.0 - (current_speed / MAX_SPEED_MPS)
-                var force = -MAX_ENGINE_FORCE * throttle_input * clamp(speed_factor, 0.0, 1.0)
-                engine_force = force
-            else:
-                engine_force = 0
-        
-        if brake_input > 0.0:
-            if current_speed > REVERSE_THRESHOLD:
-                brake = MAX_BRAKE_FORCE * brake_input
-                engine_force = 0
-                
-            elif current_speed > -REVERSE_THRESHOLD:
-                brake = 0
-                engine_force = REVERSE_FORCE * brake_input
-                
-            else:
-                engine_force = REVERSE_FORCE * brake_input
-                brake = 0
+		if throttle_input > 0.0:
+			if current_speed < MAX_SPEED_MPS:
+				var speed_factor = 1.0 - (current_speed / MAX_SPEED_MPS)
+				var force = -MAX_ENGINE_FORCE * throttle_input * clamp(speed_factor, 0.0, 1.0)
+				engine_force = force
+			else:
+				engine_force = 0
+		
+		if brake_input > 0.0:
+			if current_speed > REVERSE_THRESHOLD:
+				brake = MAX_BRAKE_FORCE * brake_input
+				engine_force = 0
+				
+			elif current_speed > -REVERSE_THRESHOLD:
+				brake = 0
+				engine_force = REVERSE_FORCE * brake_input
+				
+			else:
+				engine_force = REVERSE_FORCE * brake_input
+				brake = 0
 
-        PlayerState.engine_force = engine_force
-        
-        if PlayerState.engine_force != 0:
-            var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
-            if speed_upgrades.size() != 0:
-                var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
-                if PlayerState.engine_force > 0:
-                    PlayerState.engine_force += flatValue
-                else:
-                    PlayerState.engine_force -= flatValue
-                PlayerState.engine_force *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
-        
-        engine_force = PlayerState.engine_force
-        
-        steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
+		PlayerState.engine_force = engine_force
+		
+		if MAX_SPEED_MPS != 0:
+			var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
+			if speed_upgrades.size() != 0:
+				var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+				if MAX_SPEED_MPS > 0:
+					MAX_SPEED_MPS += flatValue
+				else:
+					MAX_SPEED_MPS -= flatValue
+				MAX_SPEED_MPS *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		
+		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 
-        PlayerState.fuel -= abs(PlayerState.engine_force) * PlayerState.fuel_decay_rate * delta
+		if throttle_input == 0 and brake_input == 0: brake = 2.0
+		
+		if next_goal_position != Vector3.ZERO:
+			var dir_world = (next_goal_position - global_position)
+			dir_world.y = 0
+			
+			if dir_world.length() == 0:
+				return
+			dir_world = dir_world.normalized()
 
-        if throttle_input == 0 and brake_input == 0: brake = 2.0
-        
-        if next_goal_position != Vector3.ZERO:
-            var dir_world = (next_goal_position - global_position)
-            dir_world.y = 0
-            
-            if dir_world.length() == 0:
-                return
-            dir_world = dir_world.normalized()
+			var dir_local = global_transform.basis.inverse() * dir_world
 
-            var dir_local = global_transform.basis.inverse() * dir_world
+			var target_yaw = atan2(dir_local.x, dir_local.z)
 
-            var target_yaw = atan2(dir_local.x, dir_local.z)
+			goal_arrow.rotation.y = target_yaw
+			
+			goal_arrow.visible = true
+			
+		else:
+			goal_arrow.visible = false
+			
 
-            goal_arrow.rotation.y = target_yaw
-            
-            goal_arrow.visible = true
-            
-        else:
-            goal_arrow.visible = false
-            
+	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_left > 5
 
-    rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_left > 5
+	if multiplayer.is_server():
+		PlayerState.fuel -= abs(engine_force) * PlayerState.fuel_decay_rate * delta
+		
 
-    if Input.is_action_just_pressed("switch_roles"):
-        for player_id in MultiplayerManager.players.keys():
-            if MultiplayerManager.players[player_id] == MultiplayerManager.Role.DRIVER:
-                MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.SHOOTER)
-            else:
-                MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.DRIVER)
+	if Input.is_action_just_pressed("switch_roles"):
+		for player_id in MultiplayerManager.players.keys():
+			if MultiplayerManager.players[player_id] == MultiplayerManager.Role.DRIVER:
+				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.SHOOTER)
+			else:
+				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.DRIVER)
 
-    if Input.is_action_pressed("interact") and shop_label.visible:
-        shop.show_shop()
+	if Input.is_action_pressed("interact") and shop_label.visible:
+		shop.show_shop()

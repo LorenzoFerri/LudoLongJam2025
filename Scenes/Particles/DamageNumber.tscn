@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://h3qny7phjt8h"]
+
+[ext_resource type="Script" uid="uid://c7i5hcx3g030i" path="res://Scenes/Particles/DamageNumber.gd" id="1_2etjj"]
+
+[node name="DamageNumber" type="Node3D"]
+script = ExtResource("1_2etjj")
+
+[node name="Label3D" type="Label3D" parent="."]
+billboard = 1
+text = "512"
+font_size = 256

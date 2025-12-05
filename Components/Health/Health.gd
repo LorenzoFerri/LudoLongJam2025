@@ -23,6 +23,6 @@ signal death
 func _ready() -> void:
 	hurtbox_component.hurt.connect(take_damage)
 
-func take_damage(weapon: Weapon, _hit_position: Vector3, _hit_normal: Vector3):
+func take_damage(_weapon: Weapon, _hit_position: Vector3, _hit_normal: Vector3, damage: float):
 	if multiplayer.is_server():
-		hp -= weapon.damage
+		hp -= damage

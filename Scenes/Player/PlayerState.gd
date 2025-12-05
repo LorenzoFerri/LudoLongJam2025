@@ -40,7 +40,7 @@ func debug_upgrade():
 	var cond: EveryNShotCondition = EveryNShotCondition.new()
 	cond.frequency = 3
 	result.condition = cond
-	var eff = SpeedModifier.new()
+	var eff = DamageModifier.new()
 	eff.flatValue = 10000
 	eff.percentageValue = 100
 	result.effects = [eff]

@@ -44,7 +44,13 @@ func shoot():
 	if shooting_raycast.is_colliding():
 		var collider = shooting_raycast.get_collider()
 		if collider is HurtBoxComponent:
-			collider.hit.rpc(current_weapon.weapon_type, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal())
+			var damage = current_weapon.damage
+			var damage_upgrades = PlayerState.get_active_effects_by_type("DamageModifier")
+			if damage_upgrades.size() != 0:
+				damage += damage_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+				damage *= 1 + damage_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		
+			collider.hit.rpc(current_weapon.weapon_type, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal(), damage)
 
 @rpc("any_peer", "call_local", "unreliable")
 func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:

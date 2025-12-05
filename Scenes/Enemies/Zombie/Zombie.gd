@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name Zombie
 
+var damage_number_scene = preload("res://Scenes/Particles/DamageNumber.tscn")
+
 var blood_decal = preload("res://Assets/Decal/Blood.png")
 const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.gd")
 @export var gravity_scale := 10.0
@@ -38,8 +40,12 @@ func _exit_tree() -> void:
 	if ZombieManagerClass.instance:
 		ZombieManagerClass.instance.unregister_zombie(self)
 
-func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3) -> void:
+func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_normal: Vector3, damage: float) -> void:
 	spawn_blood(hit_position, hit_normal)
+	var damage_number = damage_number_scene.instantiate()
+	damage_number.damage = damage
+	get_parent().add_child(damage_number)
+	damage_number.global_position = hit_position
 
 func manager_apply_transform(new_transform: Transform3D, direction: Vector3, vertical_velocity: float, on_floor: bool) -> void:
 	global_transform = new_transform
@@ -132,5 +138,6 @@ func _on_hurt_box_component_body_entered(body: Node3D) -> void:
 		hurt_box_component.hit.rpc(
 			WeaponList.WeaponType.TRUCK,
 			truck.global_transform.origin,
-			truck.global_position.direction_to(global_transform.origin)
+			truck.global_position.direction_to(global_transform.origin),
+			100000
 		)

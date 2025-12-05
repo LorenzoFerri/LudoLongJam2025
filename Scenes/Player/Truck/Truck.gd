@@ -68,15 +68,26 @@ func _process(delta: float) -> void:
 		var brake_input = Input.get_action_strength("brake")
 		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
 
-		# %Speed.text = str(floor(current_speed)) + "/" + str(MAX_SPEED_MPS)
-		%Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, MAX_SPEED_MPS * 3.6]
+		var current_max_speed = MAX_SPEED_MPS
+		var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
+		if speed_upgrades.size() != 0:
+			var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+			if current_max_speed > 0:
+				current_max_speed += flatValue
+			else:
+				current_max_speed -= flatValue
+			current_max_speed *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		
+
+		# %Speed.text = str(floor(current_speed)) + "/" + str(current_max_speed)
+		%Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, current_max_speed * 3.6]
 		
 		engine_force = 0
 		brake = 0
 
 		if throttle_input > 0.0:
-			if current_speed < MAX_SPEED_MPS:
-				var speed_factor = 1.0 - (current_speed / MAX_SPEED_MPS)
+			if current_speed < current_max_speed:
+				var speed_factor = 1.0 - (current_speed / current_max_speed)
 				var force = -MAX_ENGINE_FORCE * throttle_input * clamp(speed_factor, 0.0, 1.0)
 				engine_force = force
 			else:
@@ -96,16 +107,6 @@ func _process(delta: float) -> void:
 				brake = 0
 
 		PlayerState.engine_force = engine_force
-		
-		if MAX_SPEED_MPS != 0:
-			var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
-			if speed_upgrades.size() != 0:
-				var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
-				if MAX_SPEED_MPS > 0:
-					MAX_SPEED_MPS += flatValue
-				else:
-					MAX_SPEED_MPS -= flatValue
-				MAX_SPEED_MPS *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
 		
 		steering = lerp(steering, steering_direction * TURN_AMOUNT, TURN_SPEED * delta)
 

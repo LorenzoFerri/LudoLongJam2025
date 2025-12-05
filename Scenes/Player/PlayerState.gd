@@ -31,6 +31,9 @@ func _ready() -> void:
 	config.add_property(":max_fuel")
 	
 	synchronizer.replication_config = config
+	synchronizer.root_path = get_path()
+	
+	add_child(synchronizer, true)
 
 func debug_upgrade():
 	var result: Upgrade = Upgrade.new()

@@ -15,5 +15,5 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var tween := get_tree().create_tween()
 	tween.parallel().tween_property(label_3d, "modulate:a", 0, lifetime)
-	tween.parallel().tween_property(self, "position", (position + direction) * distance, lifetime)
+	tween.parallel().tween_property(self, "global_position", global_position + (direction * distance), lifetime)
 	tween.tween_callback(self.queue_free)

@@ -13,10 +13,14 @@ func _ready() -> void:
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Truck and not was_reached:
 		body.toggle_goal_interact_button(true)
+		body.inside_goal = self
 
 func _on_area_3d_body_exited(body: Node3D) -> void:
-	if body is Truck and not was_reached:
+	if body is Truck:
 		body.toggle_goal_interact_button(false)
+		body.inside_goal = null
 
 func interact():
-	goal_interacted.emit()
+	if not was_reached:
+		goal_interacted.emit()
+		was_reached = true

@@ -27,6 +27,8 @@ class_name Truck
 
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
 
+var inside_goal: Goal = null
+
 var next_goal_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
@@ -145,5 +147,7 @@ func _process(delta: float) -> void:
 			else:
 				MultiplayerManager.set_player_role.rpc(player_id, MultiplayerManager.Role.DRIVER)
 
-	if Input.is_action_pressed("interact") and shop_label.visible:
+	if Input.is_action_pressed("interact") and shop_label.visible and inside_goal:
+		toggle_goal_interact_button(false)
+		inside_goal.interact()
 		shop.show_shop()

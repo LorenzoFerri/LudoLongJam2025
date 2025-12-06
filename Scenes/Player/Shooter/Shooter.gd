@@ -3,6 +3,7 @@ extends Node3D
 class_name Shooter
 
 const bullet_scene = preload("res://Weapon/Projectiles/Bullet.tscn")
+const explosion_scene = preload("res://Scenes/Particles/Explosion/Explosion.tscn")
 
 const machine_gun = preload("res://Weapon/MachineGun.tres")
 
@@ -49,8 +50,15 @@ func shoot():
 			if damage_upgrades.size() != 0:
 				damage += damage_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
 				damage *= 1 + damage_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
-		
 			collider.hit.rpc(current_weapon.weapon_type, shooting_raycast.get_collision_point(), shooting_raycast.get_collision_normal(), damage)
+		var explosion_upgrades = PlayerState.get_active_effects_by_type("ExplodingBullets")
+		if explosion_upgrades.size() != 0:
+			var explosion_damage = 0.0
+			var explosion_radius = 0.0
+			for upgrade in explosion_upgrades:
+				explosion_damage += upgrade.damage
+				explosion_radius += upgrade.radius
+			spawn_explosion.rpc(shooting_raycast.get_collision_point(), explosion_radius, explosion_damage)
 
 @rpc("any_peer", "call_local", "unreliable")
 func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
@@ -62,3 +70,9 @@ func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
 	bullet.end_position = target_position
 	bullet.speed = current_weapon.projectile_speed
 	bullets_group.add_child(bullet)
+
+@rpc("any_peer", "call_local")
+func spawn_explosion(explosion_position: Vector3, _radius: float, _damage: float) -> void:
+	var explosion_instance: Node3D = explosion_scene.instantiate()
+	bullets_group.add_child(explosion_instance)
+	explosion_instance.global_position = explosion_position

@@ -48,9 +48,9 @@ func debug_upgrade():
 	var cond: EveryNShotCondition = EveryNShotCondition.new()
 	cond.frequency = 3
 	result.condition = cond
-	var eff = FuelModifier.new()
-	eff.flatValue = 10000
-	eff.percentageValue = 100
+	var eff := ExplodingBullets.new()
+	eff.radius = 5.0
+	eff.damage = 50.0
 	result.effects = [eff]
 	return result
 

@@ -45,12 +45,12 @@ func _ready() -> void:
 
 func debug_upgrade():
 	var result: Upgrade = Upgrade.new()
-	var cond: EveryNShotCondition = EveryNShotCondition.new()
-	cond.frequency = 3
-	result.condition = cond
-	var eff := ExplodingBullets.new()
-	eff.radius = 5.0
-	eff.damage = 50.0
+	#var cond: EveryNShotCondition = EveryNShotCondition.new()
+	#cond.frequency = 3
+	#result.condition = cond
+	var eff := ArmorModifier.new()
+	eff.flatValue = 1250
+	eff.percentageValue = 20.0
 	result.effects = [eff]
 	return result
 

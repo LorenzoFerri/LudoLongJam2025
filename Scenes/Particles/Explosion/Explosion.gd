@@ -2,7 +2,8 @@
 extends Node3D
 
 @export var radius: float = 1.0
-@export var scale_factor: float = 1.0
+@export var scale_factor: float = 0.3
+@export var damage: float = 1.0
 var cloud_material: ParticleProcessMaterial
 var spark_material: ParticleProcessMaterial
 var flare_material: ParticleProcessMaterial
@@ -17,6 +18,7 @@ var flare_material: ParticleProcessMaterial
 @export var vfx_flare_base_scale: float
 @onready var omni_light_3d: OmniLight3D = $OmniLight3D
 @export var light_range: float = 3.3
+@onready var collision_shape_3d: CollisionShape3D = $Area3D/CollisionShape3D
 
 func _ready():
 	cloud_material = vfx_clouds.process_material as ParticleProcessMaterial
@@ -38,4 +40,12 @@ func _process(_delta: float) -> void:
 		flare_material.scale_min = vfx_flare_base_scale * radius * scale_factor
 		flare_material.scale_max = vfx_flare_base_scale * radius * scale_factor 
 	if omni_light_3d:
-		omni_light_3d.range = light_range * radius * scale_factor
+		omni_light_3d.omni_range = light_range * radius * scale_factor
+	
+	if collision_shape_3d:
+		collision_shape_3d.shape.radius = radius
+
+
+func _on_area_3d_area_entered(area: Area3D) -> void:
+	if area is HurtBoxComponent:
+		area.hit.rpc(WeaponList.WeaponType.MACHINE_GUN, area.global_position, Vector3.UP, damage)

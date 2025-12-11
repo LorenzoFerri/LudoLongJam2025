@@ -8,7 +8,7 @@ const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.g
 @export var gravity_scale := 10.0
 @export var walk_animation_name := "walk"
 @export var money_gain_on_kill := 10.0
-@export var fuel_loss_on_hit := 100.0
+@export var fuel_loss_on_hit := PlayerState.STARTING_FUEL / 10
 
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
@@ -147,4 +147,10 @@ func _on_hurt_box_component_body_entered(body: Node3D) -> void:
 			100000
 		)
 		
-		PlayerState.fuel -= fuel_loss_on_hit
+		var fuel_loss = fuel_loss_on_hit
+		var fuel_loss_upgrades = PlayerState.get_active_effects_by_type("ArmorModifier")
+		if fuel_loss_upgrades.size() != 0:
+			fuel_loss -= max(fuel_loss_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0), 0)
+			fuel_loss *= max(1 - fuel_loss_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100, 0)
+		
+		PlayerState.fuel -= max(fuel_loss, fuel_loss_on_hit * 0.25)

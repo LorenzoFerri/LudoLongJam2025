@@ -72,7 +72,9 @@ func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
 	bullets_group.add_child(bullet)
 
 @rpc("any_peer", "call_local")
-func spawn_explosion(explosion_position: Vector3, _radius: float, _damage: float) -> void:
+func spawn_explosion(explosion_position: Vector3, radius: float, damage: float) -> void:
 	var explosion_instance: Node3D = explosion_scene.instantiate()
+	explosion_instance.radius = radius
+	explosion_instance.damage = damage
 	bullets_group.add_child(explosion_instance)
 	explosion_instance.global_position = explosion_position

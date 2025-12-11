@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bwigs0feqnj7p"]
+[gd_scene load_steps=31 format=3 uid="uid://bwigs0feqnj7p"]
 
 [ext_resource type="Material" uid="uid://1vt22kmbkos4" path="res://Scenes/Particles/Explosion/m_explosion.tres" id="1_0rwda"]
 [ext_resource type="Script" uid="uid://d4lfasfsm224r" path="res://Scenes/Particles/Explosion/Explosion.gd" id="1_fo8qg"]
@@ -36,12 +36,12 @@ curve = SubResource("Curve_bffdb")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lgsy4"]
 emission_shape = 1
 emission_sphere_radius = 0.2
-radial_velocity_min = 2.275
-radial_velocity_max = 2.625
+radial_velocity_min = 1.95
+radial_velocity_max = 2.25
 radial_velocity_curve = SubResource("CurveTexture_ui3tk")
 gravity = Vector3(0, 0, 0)
-scale_min = 0.595
-scale_max = 0.63
+scale_min = 0.51
+scale_max = 0.54
 scale_curve = SubResource("CurveTexture_hm3wv")
 color_ramp = SubResource("GradientTexture1D_6vkl3")
 alpha_curve = SubResource("CurveTexture_tc5io")
@@ -72,11 +72,11 @@ curve = SubResource("Curve_der8p")
 particle_flag_align_y = true
 direction = Vector3(0, 1, 0)
 spread = 90.0
-initial_velocity_min = 0.175
-initial_velocity_max = 0.35
+initial_velocity_min = 0.15
+initial_velocity_max = 0.3
 gravity = Vector3(0, 0, 0)
-scale_min = 1.75
-scale_max = 2.45
+scale_min = 1.5
+scale_max = 2.1
 scale_curve = SubResource("CurveTexture_l1ypf")
 alpha_curve = SubResource("CurveTexture_ivoye")
 hue_variation_min = -1.0
@@ -107,8 +107,8 @@ curve = SubResource("Curve_d14bd")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fqi58"]
 gravity = Vector3(0, 0, 0)
-scale_min = 4.2
-scale_max = 4.2
+scale_min = 3.6
+scale_max = 3.6
 scale_curve = SubResource("CurveTexture_knf3x")
 
 [sub_resource type="QuadMesh" id="QuadMesh_a15sa"]
@@ -235,16 +235,16 @@ _data = {
 &"RESET": SubResource("Animation_ft7b3")
 }
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_2na8r"]
+radius = 1.0
+
 [node name="Explosion" type="Node3D"]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
 script = ExtResource("1_fo8qg")
-scale_factor = 0.35
 vfx_clouds_base_scale = 1.7
 vfx_clouds_base_radial_velocity = 6.5
 vfx_sparks_base_scale = 5.0
 vfx_sparks_base_initial_velocity = 0.5
 vfx_flare_base_scale = 12.0
-light_range = null
 
 [node name="VFX_Clouds" type="GPUParticles3D" parent="."]
 material_override = ExtResource("1_0rwda")
@@ -281,10 +281,20 @@ draw_pass_1 = SubResource("QuadMesh_a15sa")
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 light_color = Color(0.99999994, 0.56665754, 0.31409204, 1)
 light_energy = 20.0
-omni_range = 10.0
+omni_range = 0.99
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_xyx37")
 }
 autoplay = "Explode"
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_2na8r")
+debug_color = Color(0.825329, 0.0016150755, 0.9565236, 0.41960785)
+
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]

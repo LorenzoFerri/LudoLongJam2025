@@ -99,14 +99,13 @@ func _process(delta: float) -> void:
 			if current_speed > REVERSE_THRESHOLD:
 				brake = MAX_BRAKE_FORCE * brake_input
 				engine_force = 0
-				
-			elif current_speed > -REVERSE_THRESHOLD:
-				brake = 0
-				engine_force = REVERSE_FORCE * brake_input
-				
 			else:
-				engine_force = REVERSE_FORCE * brake_input
-				brake = 0
+				if abs(current_speed) < current_max_speed:
+					var speed_factor = 1.0 - (abs(current_speed) / current_max_speed)
+					var force = MAX_ENGINE_FORCE * brake_input * clamp(speed_factor, 0.0, 1.0)
+					engine_force = force
+				else:
+					engine_force = 0
 
 		PlayerState.engine_force = engine_force
 		

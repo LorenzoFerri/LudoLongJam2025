@@ -7,6 +7,8 @@ var blood_decal = preload("res://Assets/Decal/Blood.png")
 const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.gd")
 @export var gravity_scale := 10.0
 @export var walk_animation_name := "walk"
+@export var money_gain_on_kill := 10.0
+@export var fuel_loss_on_hit := 100.0
 
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
@@ -125,6 +127,9 @@ func die():
 	collision_shape_3d.set_deferred("disabled", true)
 	physical_bone_simulator_3d.set_deferred("active", true)
 	physical_bone_simulator_3d.call_deferred("physical_bones_start_simulation")
+	
+	if multiplayer.is_server():
+		PlayerState.money += money_gain_on_kill
 	# if ZombieManagerClass.instance:
 	# 	ZombieManagerClass.instance.unregister_zombie(self)
 
@@ -141,3 +146,5 @@ func _on_hurt_box_component_body_entered(body: Node3D) -> void:
 			truck.global_position.direction_to(global_transform.origin),
 			100000
 		)
+		
+		PlayerState.fuel -= fuel_loss_on_hit

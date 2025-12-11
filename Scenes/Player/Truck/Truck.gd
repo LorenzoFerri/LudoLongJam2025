@@ -2,6 +2,8 @@ extends VehicleBody3D
 
 class_name Truck
 
+const fire_trail_scene = preload("res://Scenes/Particles/FireTrail/FireTrail.tscn")
+
 @export var MAX_ENGINE_FORCE: float = 2000.0
 @export var MAX_BRAKE_FORCE: float = 100.0
 @export var REVERSE_FORCE: float = 400.0
@@ -26,6 +28,9 @@ class_name Truck
 @onready var shop: ShopUI = $CanvasLayer/Shop
 
 @onready var goal_arrow: MeshInstance3D = %GoalArrow
+
+@onready var fire_trail_container: Node3D = $FireTrail
+
 
 var inside_goal: Goal = null
 
@@ -131,13 +136,13 @@ func _process(delta: float) -> void:
 			
 		else:
 			goal_arrow.visible = false
-			
+		
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_left > 5
 
 	if multiplayer.is_server():
 		PlayerState.fuel -= abs(engine_force) * PlayerState.fuel_decay_rate * delta
-		
+	
 
 	if Input.is_action_just_pressed("switch_roles"):
 		for player_id in MultiplayerManager.players.keys():
@@ -150,3 +155,33 @@ func _process(delta: float) -> void:
 		toggle_goal_interact_button(false)
 		inside_goal.interact()
 		shop.show_shop()
+
+
+func _on_fire_trail_timer_timeout() -> void:
+	if multiplayer.get_unique_id() != MultiplayerManager.get_driver_id():
+		return
+	
+	if abs(PlayerState.current_speed) < 2:
+		return
+	
+	var fire_trail_upgrades = PlayerState.get_active_effects_by_type("FireTrail")
+	if fire_trail_upgrades.size() == 0:
+		return
+	
+	var time = fire_trail_upgrades.reduce(func(acc, e): return acc + e.time, 0.0)
+	var damage = fire_trail_upgrades.reduce(func(acc, e): return acc + e.damage, 0.0)
+	
+	if rear_left_wheel.is_in_contact():
+		var trail = fire_trail_scene.instantiate()
+		trail.time = time
+		trail.damage = damage
+		trail.position = rear_left_wheel.global_position
+		fire_trail_container.add_child(trail, true)
+
+	if rear_right_wheel.is_in_contact():
+		var trail = fire_trail_scene.instantiate()
+		trail.time = time
+		trail.damage = damage
+		trail.position = rear_right_wheel.global_position
+		fire_trail_container.add_child(trail, true)
+	

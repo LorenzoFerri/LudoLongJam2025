@@ -738,3 +738,16 @@ offset_bottom = 56.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 32
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://di2dvcqllx4ub")
+spawn_path = NodePath("../FireTrail")
+
+[node name="FireTrail" type="Node3D" parent="."]
+top_level = true
+
+[node name="FireTrailTimer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[connection signal="timeout" from="FireTrailTimer" to="." method="_on_fire_trail_timer_timeout"]

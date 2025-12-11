@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://di2dvcqllx4ub"]
+
+[ext_resource type="Script" uid="uid://d0w1ky4ni8iwk" path="res://Scenes/Particles/FireTrail/fire_trail.gd" id="1_1tgyg"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1tgyg"]
+
+[node name="FireTrail" type="Node3D"]
+script = ExtResource("1_1tgyg")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_1tgyg")
+debug_color = Color(0.7764706, 0, 0.24705882, 0.84705883)
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

@@ -154,3 +154,13 @@ func _on_hurt_box_component_body_entered(body: Node3D) -> void:
 			fuel_loss *= max(1 - fuel_loss_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100, 0)
 		
 		PlayerState.fuel -= max(fuel_loss, fuel_loss_on_hit * 0.25)
+
+
+var can_be_hit_by_fire_trail = true
+func hit_by_fire_trail(damage: float):
+	if not can_be_hit_by_fire_trail:
+		return
+	
+	can_be_hit_by_fire_trail = false
+	get_tree().create_timer(1).timeout.connect(func(): can_be_hit_by_fire_trail = true)
+	hurt_box_component.hit.rpc(WeaponList.WeaponType.MACHINE_GUN, global_position, Vector3.UP, damage)

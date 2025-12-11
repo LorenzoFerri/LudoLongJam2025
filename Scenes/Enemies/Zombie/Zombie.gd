@@ -50,7 +50,8 @@ func _on_hurt_box_component_hurt(_weapon: Weapon, hit_position: Vector3, hit_nor
 	damage_number.global_position = hit_position
 
 func manager_apply_transform(new_transform: Transform3D, direction: Vector3, vertical_velocity: float, on_floor: bool) -> void:
-	global_transform = new_transform
+	global_position = new_transform.origin
+	global_rotation = new_transform.basis.get_euler()
 	_move_direction = direction
 	_vertical_velocity = vertical_velocity
 	_is_on_floor = on_floor

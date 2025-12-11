@@ -14,6 +14,8 @@ var zombie_scene = preload("res://Scenes/Enemies/Zombie/Zombie.tscn")
 
 var zombie_spawn_cooldown := 0.0
 
+var big_zombie_chance := 0.5
+
 @export var player: Node3D
 
 static var instance: ZombieManager
@@ -150,8 +152,19 @@ func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> vo
 
 func spawn_zombie():
 	var zombie: Zombie = zombie_scene.instantiate()
-	zombie.position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))
+	zombie.position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))	
+	
+	var is_big_zombie = randf() < big_zombie_chance
+	
+	if is_big_zombie:
+		zombie.scale = Vector3(4, 4, 4)
+	
 	add_child(zombie, true)
+	
+	if is_big_zombie:
+		zombie.fuel_loss_on_hit *= 3
+		zombie.health_component.max_hp *= 3
+		zombie.health_component.hp *= 3
 
 # Function to pick a random point within a radius around this node
 func get_random_point_within_radius(radius: float = 20.0) -> Vector3:

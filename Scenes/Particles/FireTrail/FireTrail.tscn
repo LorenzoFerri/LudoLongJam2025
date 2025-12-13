@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://di2dvcqllx4ub"]
+[gd_scene load_steps=14 format=3 uid="uid://di2dvcqllx4ub"]
 
 [ext_resource type="Script" uid="uid://d0w1ky4ni8iwk" path="res://Scenes/Particles/FireTrail/fire_trail.gd" id="1_1tgyg"]
 [ext_resource type="Shader" uid="uid://dyjubndttw3bf" path="res://Scenes/Particles/FireTrail/FireTrail.tres" id="2_0vnqs"]
+[ext_resource type="AudioStream" uid="uid://dg63dbuswm67o" path="res://Assets/Sounds/fire_trail.wav" id="3_uisg5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1tgyg"]
 
@@ -69,5 +70,9 @@ lifetime = 2.0
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_pake6")
 draw_pass_1 = SubResource("QuadMesh_xvmgq")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_uisg5")
+bus = &"Firetrail"
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=4 uid="uid://cr5elbqtrx0ek"]
+[gd_scene load_steps=13 format=4 uid="uid://cr5elbqtrx0ek"]
 
 [ext_resource type="Script" uid="uid://dksdaa5feveoi" path="res://Scenes/Player/Shooter/Shooter.gd" id="1_n5413"]
 [ext_resource type="Texture2D" uid="uid://bwjt7gs87cf8i" path="res://Assets/Weapon/textures/Tex_1130.png" id="2_11qt2"]
+[ext_resource type="AudioStream" uid="uid://uemr88is7o30" path="res://Assets/Sounds/fire.mp3" id="3_t3cls"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l71kv"]
 resource_name = "Tex_1130"
@@ -163,3 +164,7 @@ one_shot = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_1pcg8")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_t3cls")
+bus = &"Weapon"

@@ -17,6 +17,9 @@ const machine_gun = preload("res://Weapon/MachineGun.tres")
 @onready var bullets_group: Node3D = $Bullets
 @onready var current_weapon: Weapon = machine_gun
 
+@onready var shoot_sound: AudioStreamPlayer3D = $AudioStreamPlayer3D
+
+
 func _ready() -> void:
 	shooting_timer.wait_time = current_weapon.attack_cooldown
 
@@ -70,6 +73,9 @@ func spawn_bullet(start_position: Vector3, target_position: Vector3) -> void:
 	bullet.end_position = target_position
 	bullet.speed = current_weapon.projectile_speed
 	bullets_group.add_child(bullet)
+	
+	shoot_sound.pitch_scale = randf_range(1, 1.2)
+	shoot_sound.play()
 
 @rpc("any_peer", "call_local")
 func spawn_explosion(explosion_position: Vector3, radius: float, damage: float) -> void:

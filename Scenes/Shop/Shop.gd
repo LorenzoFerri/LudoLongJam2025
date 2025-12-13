@@ -72,11 +72,14 @@ func buy_upgrade(upgrade_dict: Dictionary):
 
 func show_shop():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	refresh(true)
+	if multiplayer.is_server():
+		refresh(true)
 	visible = true
 	
 	await get_tree().process_frame
-	card_container.get_child(0).grab_focus()
+	var child = card_container.get_child(0)
+	if child != null:
+		child.grab_focus()
 	
 	Engine.time_scale = 0.1
 
@@ -98,3 +101,4 @@ func _on_button_pressed() -> void:
 	visible = false
 	Engine.time_scale = 1
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	PlayerState.fuel = PlayerState.max_fuel

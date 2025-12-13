@@ -754,7 +754,7 @@ spawn_path = NodePath("../FireTrail")
 top_level = true
 
 [node name="FireTrailTimer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.2
 autostart = true
 
 [node name="Sounds" type="Node3D" parent="."]

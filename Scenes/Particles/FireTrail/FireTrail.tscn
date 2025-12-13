@@ -5,6 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://dg63dbuswm67o" path="res://Assets/Sounds/fire_trail.wav" id="3_uisg5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1tgyg"]
+radius = 0.8
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uisg5"]
 render_priority = 0
@@ -12,7 +13,7 @@ shader = ExtResource("2_0vnqs")
 shader_parameter/Explosion_Color = Color(1, 0.333333, 0, 1)
 
 [sub_resource type="Curve" id="Curve_0vnqs"]
-_data = [Vector2(0, 0.36615974), 0.0, -2.5043514, 0, 0, Vector2(0.19025159, 0.08375573), 3.29717, 3.29717, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, -2.5043514, 0, 0, Vector2(0.25943398, 0.039826155), 0.21230324, 0.21230324, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_uisg5"]
@@ -34,7 +35,7 @@ curve = SubResource("Curve_pp6os")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pake6"]
 emission_shape = 1
-emission_sphere_radius = 0.5
+emission_sphere_radius = 0.8
 angle_min = -179.99998
 angle_max = 180.00002
 direction = Vector3(0, 1, 0)
@@ -44,8 +45,8 @@ initial_velocity_max = 1.0
 angular_velocity_min = -20.000015
 angular_velocity_max = 19.999983
 gravity = Vector3(0, 0, 0)
-scale_min = 0.59999996
-scale_max = 0.79999995
+scale_min = 1.4
+scale_max = 1.5999999
 scale_curve = SubResource("CurveTexture_5sjvm")
 color_ramp = SubResource("GradientTexture1D_6isbo")
 alpha_curve = SubResource("CurveTexture_uisg5")
@@ -65,8 +66,8 @@ debug_color = Color(0.7764706, 0, 0.24705882, 0.84705883)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 material_override = SubResource("ShaderMaterial_uisg5")
-amount = 32
-lifetime = 2.0
+amount = 12
+lifetime = 1.5
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_pake6")
 draw_pass_1 = SubResource("QuadMesh_xvmgq")

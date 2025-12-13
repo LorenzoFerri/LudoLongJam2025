@@ -692,20 +692,33 @@ skeleton = NodePath("../..")
 modulate = Color(0.78431374, 1, 0, 1)
 offset_left = 153.0
 offset_top = 50.0
-offset_right = 529.0
-offset_bottom = 77.0
+offset_right = 769.0
+offset_bottom = 107.0
 max_value = 10000.0
 step = 1.0
+show_percentage = false
+
+[node name="FuelLabel" type="Label" parent="CanvasLayer/FuelBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "0/0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer"]
 unique_name_in_owner = true
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -343.0
-offset_top = 45.0
-offset_right = -95.0
-offset_bottom = 68.0
+offset_left = -342.0
+offset_top = 63.0
+offset_right = -94.0
+offset_bottom = 108.0
 grow_horizontal = 0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -738,13 +751,14 @@ visible = false
 
 [node name="Speed" type="Label" parent="CanvasLayer"]
 unique_name_in_owner = true
-offset_left = 1128.0
-offset_top = 33.0
-offset_right = 1168.0
-offset_bottom = 56.0
+offset_left = 1127.0
+offset_top = 59.0
+offset_right = 1299.0
+offset_bottom = 104.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 32
+text = "0.0/0.0kmh"
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://di2dvcqllx4ub")

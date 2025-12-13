@@ -33,12 +33,12 @@ var goals_data = {}
 @export var micro_threshold: float = 0.67
 var micro_data = {}
 
-@export var fuel_threshold: float = 0.70
+@export var fuel_threshold: float = 0.75
 @export var fuel_noise_frequency: float = 0.02
 var fuel_scene = preload("res://Scenes/Collectibles/Fuel.tscn")
 var fuel_data = {}
 
-@export var packages_threshold: float = 0.67
+@export var packages_threshold: float = 0.72
 @export var packages_noise_frequency: float = 0.02
 var packages_scenes = [preload("res://Scenes/Collectibles/Packages.tscn")]
 var packages_data = {}

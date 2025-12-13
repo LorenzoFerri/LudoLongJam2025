@@ -21,7 +21,7 @@ extends Node
 
 @export var money := 1000.0
 
-var upgrade_list: Array[Upgrade] = [debug_upgrade()]
+var upgrade_list: Array[Upgrade] = []
 
 @export var shot_number: int = 0
 @export var engine_force: float = 0.0
@@ -43,16 +43,6 @@ func _ready() -> void:
 	
 	add_child(synchronizer, true)
 
-func debug_upgrade():
-	var result: Upgrade = Upgrade.new()
-	var cond: EveryNShotCondition = EveryNShotCondition.new()
-	cond.frequency = 3
-	result.condition = cond
-	var eff := FireTrail.new()
-	eff.time = 5
-	eff.damage = 1.0
-	result.effects = [eff]
-	return result
 
 func get_active_upgrades_with_effect(effect_class_name) -> Array[Upgrade]:
 	return upgrade_list.filter(func(upgrade: Upgrade):

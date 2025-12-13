@@ -58,7 +58,7 @@ heightmap_texture = ExtResource("6_s53j1")
 
 [sub_resource type="Curve" id="Curve_ng1ea"]
 _limits = [5.0, 200.0, 0.0, 30.0]
-_data = [Vector2(0, 88.0598), 0.0, 12.731043, 0, 0, Vector2(23.224543, 198.01877), 0.0, 0.0, 0, 0, Vector2(30, 200), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 42.48175), 0.0, 21.459719, 0, 0, Vector2(23.537859, 200), 0.0, 0.0, 0, 0, Vector2(30, 200), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_0d0er"]
@@ -117,7 +117,7 @@ unique_name_in_owner = true
 script = ExtResource("10_ng1ea")
 collisions_per_frame = 16
 collision_margin = 0.01
-min_zombie_spawn_distance = 30.0
+min_zombie_spawn_distance = 60.0
 max_zombie_spawn_distance = 100.0
 spawn_rate_curve = SubResource("Curve_ng1ea")
 spawn_cooldown_curve = SubResource("Curve_0d0er")

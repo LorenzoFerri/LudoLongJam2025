@@ -70,6 +70,7 @@ func buy_upgrade(upgrade_dict: Dictionary):
 	upgrade_bought.emit(upgrade)
 	shop_sound.play()
 
+@rpc("any_peer", "call_local")
 func show_shop():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if multiplayer.is_server():

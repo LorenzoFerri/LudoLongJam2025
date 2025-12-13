@@ -181,7 +181,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_pressed("interact") and shop_label.visible and inside_goal:
 		toggle_goal_interact_button(false)
 		inside_goal.interact()
-		shop.show_shop()
+		shop.show_shop.rpc()
 	
 	
 	var accelerating = abs(PlayerState.engine_force) > accel_threshold

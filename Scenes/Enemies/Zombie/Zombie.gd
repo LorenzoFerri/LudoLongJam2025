@@ -26,6 +26,7 @@ var _is_on_floor := false
 @onready var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity") * gravity_scale
 
 @onready var zombie_sounds: AudioStreamPlayer3D = $ZombieSounds
+@onready var zombie_death_sound: AudioStreamPlayer3D = $ZombieDeathSound
 
 
 func _ready() -> void:
@@ -131,6 +132,8 @@ func die():
 	collision_shape_3d.set_deferred("disabled", true)
 	physical_bone_simulator_3d.set_deferred("active", true)
 	physical_bone_simulator_3d.call_deferred("physical_bones_start_simulation")
+	
+	zombie_death_sound.play()
 	
 	if multiplayer.is_server():
 		PlayerState.money += money_gain_on_kill

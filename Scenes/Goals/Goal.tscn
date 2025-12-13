@@ -1,10 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8xqek2ksw8vj"]
+[gd_scene load_steps=5 format=3 uid="uid://b8xqek2ksw8vj"]
 
 [ext_resource type="Script" uid="uid://br1osxu167gcq" path="res://Scenes/Goals/Goal.gd" id="1_te5sv"]
 [ext_resource type="PackedScene" uid="uid://dvojaeu0wg4p5" path="res://Assets/City/City.blend" id="2_vvheb"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_wwmfl"]
-radius = 50.0
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_vvheb"]
+height = 150.0
+radius = 55.583
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wmf0x"]
+height = 200.0
+radius = 9.5
 
 [node name="Goal" type="Node3D"]
 script = ExtResource("1_te5sv")
@@ -14,10 +19,28 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("SphereShape3D_wwmfl")
+shape = SubResource("CylinderShape3D_vvheb")
 
 [node name="City" parent="." instance=ExtResource("2_vvheb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+
+[node name="Columns" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Columns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.770943, 0.9995, 49.941063)
+shape = SubResource("CylinderShape3D_wmf0x")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Columns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.227776, 0.9995, 49.941063)
+shape = SubResource("CylinderShape3D_wmf0x")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Columns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.227776, 0.9995, -50.05767)
+shape = SubResource("CylinderShape3D_wmf0x")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Columns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.770973, 0.9995, -50.05767)
+shape = SubResource("CylinderShape3D_wmf0x")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

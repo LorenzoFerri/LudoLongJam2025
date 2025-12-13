@@ -1,8 +1,55 @@
-[gd_scene load_steps=3 format=3 uid="uid://di2dvcqllx4ub"]
+[gd_scene load_steps=13 format=3 uid="uid://di2dvcqllx4ub"]
 
 [ext_resource type="Script" uid="uid://d0w1ky4ni8iwk" path="res://Scenes/Particles/FireTrail/fire_trail.gd" id="1_1tgyg"]
+[ext_resource type="Shader" uid="uid://dyjubndttw3bf" path="res://Scenes/Particles/FireTrail/FireTrail.tres" id="2_0vnqs"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1tgyg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uisg5"]
+render_priority = 0
+shader = ExtResource("2_0vnqs")
+shader_parameter/Explosion_Color = Color(1, 0.333333, 0, 1)
+
+[sub_resource type="Curve" id="Curve_0vnqs"]
+_data = [Vector2(0, 0.36615974), 0.0, -2.5043514, 0, 0, Vector2(0.19025159, 0.08375573), 3.29717, 3.29717, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_uisg5"]
+curve = SubResource("Curve_0vnqs")
+
+[sub_resource type="Gradient" id="Gradient_gd47x"]
+offsets = PackedFloat32Array(0, 0.49824563, 1)
+colors = PackedColorArray(1.353256, 0.8638148, 0, 1, 1, 0, 0, 1, 0.040047646, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6isbo"]
+gradient = SubResource("Gradient_gd47x")
+
+[sub_resource type="Curve" id="Curve_pp6os"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.11513388), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_5sjvm"]
+curve = SubResource("Curve_pp6os")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pake6"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -179.99998
+angle_max = 180.00002
+direction = Vector3(0, 1, 0)
+spread = 10.0
+initial_velocity_min = 0.79999995
+initial_velocity_max = 1.0
+angular_velocity_min = -20.000015
+angular_velocity_max = 19.999983
+gravity = Vector3(0, 0, 0)
+scale_min = 0.59999996
+scale_max = 0.79999995
+scale_curve = SubResource("CurveTexture_5sjvm")
+color_ramp = SubResource("GradientTexture1D_6isbo")
+alpha_curve = SubResource("CurveTexture_uisg5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_xvmgq"]
 
 [node name="FireTrail" type="Node3D"]
 script = ExtResource("1_1tgyg")
@@ -14,5 +61,13 @@ collision_mask = 4
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_1tgyg")
 debug_color = Color(0.7764706, 0, 0.24705882, 0.84705883)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+material_override = SubResource("ShaderMaterial_uisg5")
+amount = 32
+lifetime = 2.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_pake6")
+draw_pass_1 = SubResource("QuadMesh_xvmgq")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

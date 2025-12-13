@@ -29,7 +29,8 @@ texture = ExtResource("1_f88kc")
 texture_type = 1
 
 [sub_resource type="Gradient" id="Gradient_hqy5r"]
-colors = PackedColorArray(0.05375448, 0.016230261, 0.0003263671, 1, 0.9618868, 0.4613865, 0, 1)
+offsets = PackedFloat32Array(0, 0.3561644, 0.39726028, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.9618868, 0.4613865, 0, 1, 0.965405, 0.5111047, 0.09230775, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_wu3d8"]
 gradient = SubResource("Gradient_hqy5r")
@@ -288,7 +289,7 @@ nodes/fragment/6/position = Vector2(480, 1480)
 nodes/fragment/7/node = SubResource("VisualShaderNodeTexture_6axb8")
 nodes/fragment/7/position = Vector2(420, 1940)
 nodes/fragment/8/node = SubResource("VisualShaderNodeVectorOp_hb0ay")
-nodes/fragment/8/position = Vector2(920, 1280)
+nodes/fragment/8/position = Vector2(1000, 1280)
 nodes/fragment/9/node = SubResource("VisualShaderNodeSmoothStep_0yoel")
 nodes/fragment/9/position = Vector2(720, 1840)
 nodes/fragment/12/node = SubResource("VisualShaderNodeTexture_hqy5r")

@@ -77,9 +77,10 @@ func show_shop():
 	visible = true
 	
 	await get_tree().process_frame
-	var child = card_container.get_child(0)
-	if child != null:
-		child.grab_focus()
+	if card_container.get_child_count() > 0:
+		var child = card_container.get_child(0)
+		if child != null:
+			child.grab_focus()
 	
 	Engine.time_scale = 0.1
 

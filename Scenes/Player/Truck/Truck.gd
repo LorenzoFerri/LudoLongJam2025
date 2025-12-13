@@ -100,6 +100,11 @@ func _process(delta: float) -> void:
 		
 	
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
+		%Speed.visible = true
+	else:
+		%Speed.visible = false
+		
+	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
 		camera.current = true
 		
 		var throttle_input = Input.get_action_strength("accelerate")
@@ -108,6 +113,7 @@ func _process(delta: float) -> void:
 
 		# %Speed.text = str(floor(current_speed)) + "/" + str(current_max_speed)
 		%Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, current_max_speed * 3.6]
+		
 		
 		engine_force = 0
 		brake = 0

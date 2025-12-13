@@ -9,11 +9,16 @@ var upgrade_card_scene = preload("res://Scenes/Shop/UpgradeCard.tscn")
 @onready var card_container: HBoxContainer = %CardContainer
 
 @onready var shop_sound: AudioStreamPlayer = $ShopSound
+@onready var refresh_button: Button = $PanelContainer/MarginContainer/VBoxContainer/RefreshButton
 
 @export var card_number := 3
 
+@export var refresh_base_cost := 2000
+var current_refresh_cost = refresh_base_cost
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	current_refresh_cost = refresh_base_cost
 	build_ui()
 
 func build_ui():
@@ -33,6 +38,12 @@ func build_ui():
 		)
 		upgrade_dicts.append(node.upgrade.serialize())
 		card_container.add_child(node)
+		
+		refresh_button.text = "Refresh ({0})".format([current_refresh_cost])
+		if current_refresh_cost > PlayerState.money:
+			refresh_button.disabled = true
+		else:
+			refresh_button.disabled = false
 	
 	build_remote_ui.rpc(upgrade_dicts)
 	card_container.get_child(0).call_deferred("grab_focus")
@@ -43,6 +54,12 @@ func build_remote_ui(upgrade_dicts: Array):
 		var node: UpgradeCard = upgrade_card_scene.instantiate()
 		node.upgrade = Upgrade.deserialize(upgrade_dict)
 		card_container.add_child(node)
+	
+	refresh_button.text = "Refresh ({0})".format([current_refresh_cost])
+	if current_refresh_cost > PlayerState.money:
+		refresh_button.disabled = true
+	else:
+		refresh_button.disabled = false
 
 @rpc("any_peer", "call_local")
 func buy_upgrade(upgrade_dict: Dictionary):
@@ -54,19 +71,26 @@ func buy_upgrade(upgrade_dict: Dictionary):
 	shop_sound.play()
 
 func show_shop():
-	refresh()
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	refresh(true)
 	visible = true
 	Engine.time_scale = 0.1
 
 func _on_refresh_button_pressed() -> void:
-	refresh()
+	refresh.rpc(false)
 
-func refresh():
+@rpc("any_peer", "call_local")
+func refresh(free: bool):
 	for child in card_container.get_children():
 		child.queue_free()
 	
+	if multiplayer.is_server() and not free:
+		PlayerState.money -= current_refresh_cost
+	if not free:
+		current_refresh_cost *= 2
 	build_ui()
 
 func _on_button_pressed() -> void:
 	visible = false
 	Engine.time_scale = 1
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

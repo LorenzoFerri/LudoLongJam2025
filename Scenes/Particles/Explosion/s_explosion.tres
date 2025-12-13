@@ -29,8 +29,8 @@ texture = ExtResource("1_f88kc")
 texture_type = 1
 
 [sub_resource type="Gradient" id="Gradient_hqy5r"]
-offsets = PackedFloat32Array(0, 0.07945205, 0.24931507, 0.25205478)
-colors = PackedColorArray(0.9618868, 0.4613865, 0, 1, 0.15354626, 0.07365124, 0, 1, 0.16338897, 0.07837248, 0, 1, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.3561644, 0.39726028, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.9618868, 0.4613865, 0, 1, 0.965405, 0.5111047, 0.09230775, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_wu3d8"]
 gradient = SubResource("Gradient_hqy5r")
@@ -38,7 +38,6 @@ gradient = SubResource("Gradient_hqy5r")
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_bq5vj"]
 output_port_for_preview = 0
 texture = SubResource("GradientTexture1D_wu3d8")
-texture_type = 1
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_3442c"]
 parameter_name = "Explosion_Color"
@@ -114,7 +113,7 @@ uniform vec2 Cloud_Speed;
 uniform sampler2D tex_vtx_9;
 uniform float Cloud_Intensity;
 uniform sampler2D tex_frg_2 : source_color;
-uniform sampler2D tex_frg_3 : source_color;
+uniform sampler2D tex_frg_3;
 uniform sampler2D tex_frg_12;
 uniform sampler2D depth_tex_frg_16 : hint_depth_texture;
 uniform vec4 Explosion_Color : source_color = vec4(1.000000, 0.333333, 0.000000, 1.000000);

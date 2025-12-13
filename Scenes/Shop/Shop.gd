@@ -76,9 +76,6 @@ func buy_upgrade(upgrade_dict: Dictionary):
 
 @rpc("any_peer", "call_local")
 func show_shop():
-	if not multiplayer.is_server():
-		return
-		
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if multiplayer.is_server():
 		refresh.rpc(true)

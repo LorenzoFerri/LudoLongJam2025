@@ -8,6 +8,7 @@ var upgrade_card_scene = preload("res://Scenes/Shop/UpgradeCard.tscn")
 
 @onready var card_container: HBoxContainer = %CardContainer
 
+@onready var shop_sound: AudioStreamPlayer = $ShopSound
 
 @export var card_number := 3
 
@@ -50,6 +51,7 @@ func buy_upgrade(upgrade_dict: Dictionary):
 		PlayerState.money -= upgrade.get_price()
 	PlayerState.upgrade_list.push_back(upgrade)
 	upgrade_bought.emit(upgrade)
+	shop_sound.play()
 
 func show_shop():
 	refresh()

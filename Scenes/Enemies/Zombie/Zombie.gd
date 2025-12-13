@@ -13,7 +13,7 @@ const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.g
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D
 @onready var collision_shape_3d: CollisionShape3D = $MainCollisionShape
 @export_node_path var target_path: NodePath
-@export_range(0.1, 10.0, 0.1) var speed := 10
+@export_range(0.1, 100.0, 0.1) var speed := 20
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @export var dead = false
 const blood_emitter_scene = preload("res://Scenes/Particles/BloodEmitter.tscn")

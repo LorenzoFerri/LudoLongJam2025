@@ -78,7 +78,9 @@ func _physics_process(delta: float) -> void:
 		limit = min(collisions_per_frame, total)
 	for i in range(total - 1, -1, -1):
 		var index := (_next_index + i) % total
-		var zombie: Zombie = _zombies[index]
+		var zombie: Zombie = _zombies.get(index)
+		if zombie == null:
+			continue
 		var run_collision := i < limit
 		var vertical_speed: float = zombie.manager_get_vertical_velocity()
 		var needs_collision: bool = run_collision or (not zombie.manager_is_on_floor()) or (absf(vertical_speed) > 0.01)

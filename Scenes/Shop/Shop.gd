@@ -60,6 +60,10 @@ func build_remote_ui(upgrade_dicts: Array):
 		refresh_button.disabled = true
 	else:
 		refresh_button.disabled = false
+	
+	visible = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
 
 @rpc("any_peer", "call_local")
 func buy_upgrade(upgrade_dict: Dictionary):
@@ -72,6 +76,9 @@ func buy_upgrade(upgrade_dict: Dictionary):
 
 @rpc("any_peer", "call_local")
 func show_shop():
+	if not multiplayer.is_server():
+		return
+		
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if multiplayer.is_server():
 		refresh(true)
@@ -97,7 +104,9 @@ func refresh(free: bool):
 		PlayerState.money -= current_refresh_cost
 	if not free:
 		current_refresh_cost *= 2
-	build_ui()
+	
+	if multiplayer.is_server():
+		build_ui()
 
 func _on_button_pressed() -> void:
 	visible = false

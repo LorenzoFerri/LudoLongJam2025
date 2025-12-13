@@ -74,6 +74,10 @@ func show_shop():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	refresh(true)
 	visible = true
+	
+	await get_tree().process_frame
+	card_container.get_child(0).grab_focus()
+	
 	Engine.time_scale = 0.1
 
 func _on_refresh_button_pressed() -> void:

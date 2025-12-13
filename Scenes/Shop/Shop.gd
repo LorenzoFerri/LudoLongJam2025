@@ -48,7 +48,7 @@ func build_ui():
 	build_remote_ui.rpc(upgrade_dicts)
 	card_container.get_child(0).call_deferred("grab_focus")
 	
-@rpc("authority", "call_remote")
+@rpc("any_peer", "call_remote")
 func build_remote_ui(upgrade_dicts: Array):
 	for upgrade_dict in upgrade_dicts:
 		var node: UpgradeCard = upgrade_card_scene.instantiate()
@@ -106,7 +106,12 @@ func refresh(free: bool):
 		build_ui()
 
 func _on_button_pressed() -> void:
+	close_shop.rpc()
+	
+
+@rpc("any_peer", "call_local")
+func close_shop():
+	PlayerState.fuel = PlayerState.max_fuel
 	visible = false
 	Engine.time_scale = 1
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	PlayerState.fuel = PlayerState.max_fuel

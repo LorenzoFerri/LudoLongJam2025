@@ -36,4 +36,5 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		was_taken = true
 		if multiplayer.is_server():
 			PlayerState.money += score_gain
+		body.play_money_sound()
 		picked_up.emit()

@@ -1,9 +1,33 @@
-[gd_scene load_steps=13 format=4 uid="uid://cjyer75whv2sk"]
+[gd_scene load_steps=38 format=4 uid="uid://cjyer75whv2sk"]
 
 [ext_resource type="Script" uid="uid://b0f6phq4dei7t" path="res://Scenes/Enemies/Zombie/Zombie.gd" id="1_q16kx"]
 [ext_resource type="Script" uid="uid://ddpxrp667g1sk" path="res://Components/HurtBox/HurtBox.gd" id="3_dx3aw"]
 [ext_resource type="Script" uid="uid://d0486n3t8f823" path="res://Components/Health/Health.gd" id="4_3xicp"]
+[ext_resource type="AudioStream" uid="uid://cqyqjra0o6yci" path="res://Assets/Sounds/zombies/zombie-1.wav" id="5_mpjqc"]
+[ext_resource type="AudioStream" uid="uid://c16a53l0ve6v3" path="res://Assets/Sounds/zombies/zombie-2.wav" id="6_rowux"]
+[ext_resource type="AudioStream" uid="uid://4qpa5ux0aw1x" path="res://Assets/Sounds/zombies/zombie-11.wav" id="7_kcuv5"]
+[ext_resource type="AudioStream" uid="uid://buwvdhsrnhauu" path="res://Assets/Sounds/zombies/zombie-12.wav" id="8_bk4gi"]
+[ext_resource type="AudioStream" uid="uid://3mk3lutb15tn" path="res://Assets/Sounds/zombies/zombie-14.wav" id="9_c12lm"]
+[ext_resource type="AudioStream" uid="uid://dkrdc1n6xjlcg" path="res://Assets/Sounds/zombies/zombie-13.wav" id="10_15wk7"]
+[ext_resource type="AudioStream" uid="uid://bcy36ubccmsfg" path="res://Assets/Sounds/zombies/zombie-15.wav" id="11_7jvrd"]
+[ext_resource type="AudioStream" uid="uid://dvcjgf2r8fpjq" path="res://Assets/Sounds/zombies/zombie-16.wav" id="12_hieo1"]
+[ext_resource type="AudioStream" uid="uid://dmd830x4s5kk4" path="res://Assets/Sounds/zombies/zombie-17.wav" id="13_7yr0p"]
+[ext_resource type="AudioStream" uid="uid://cq3m3ru0frd4a" path="res://Assets/Sounds/zombies/zombie-18.wav" id="14_ei1k4"]
+[ext_resource type="AudioStream" uid="uid://dc8x4fr27jajn" path="res://Assets/Sounds/zombies/zombie-19.wav" id="15_kavpv"]
+[ext_resource type="AudioStream" uid="uid://bh286t1la4xgu" path="res://Assets/Sounds/zombies/zombie-20.wav" id="16_gowjd"]
+[ext_resource type="AudioStream" uid="uid://b5jguhk20nc2p" path="res://Assets/Sounds/zombies/zombie-3.wav" id="17_mnv0f"]
 [ext_resource type="Texture2D" uid="uid://so1akrthj3xk" path="res://Scenes/Enemies/Zombie/textures/peopleColors_baseColor.png" id="17_pmup2"]
+[ext_resource type="AudioStream" uid="uid://b5rru22cdyj4q" path="res://Assets/Sounds/zombies/zombie-21.wav" id="18_we420"]
+[ext_resource type="AudioStream" uid="uid://1e8ojo0qni31" path="res://Assets/Sounds/zombies/zombie-22.wav" id="19_so5gv"]
+[ext_resource type="AudioStream" uid="uid://c4i4tux2fy2ng" path="res://Assets/Sounds/zombies/zombie-23.wav" id="20_mg5kn"]
+[ext_resource type="AudioStream" uid="uid://cnsj5c8tis73" path="res://Assets/Sounds/zombies/zombie-24.wav" id="21_mugss"]
+[ext_resource type="AudioStream" uid="uid://0dsdohoyugoy" path="res://Assets/Sounds/zombies/zombie-4.wav" id="22_hjwsu"]
+[ext_resource type="AudioStream" uid="uid://c0y2fb4sgqnnh" path="res://Assets/Sounds/zombies/zombie-5.wav" id="23_5oplu"]
+[ext_resource type="AudioStream" uid="uid://bubt7h2yegx35" path="res://Assets/Sounds/zombies/zombie-6.wav" id="24_2jeri"]
+[ext_resource type="AudioStream" uid="uid://demooh6tliqk" path="res://Assets/Sounds/zombies/zombie-7.wav" id="25_8oscr"]
+[ext_resource type="AudioStream" uid="uid://cj4pytw5fdyw1" path="res://Assets/Sounds/zombies/zombie-8.wav" id="26_cmc6s"]
+[ext_resource type="AudioStream" uid="uid://c7clnqwxs15w1" path="res://Assets/Sounds/zombies/zombie-9.wav" id="27_cpdsf"]
+[ext_resource type="AudioStream" uid="uid://ck5hhe5x7lcoo" path="res://Assets/Sounds/zombies/zombie-10.wav" id="28_w0gtv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l2nju"]
 radius = 0.36035156
@@ -734,6 +758,33 @@ properties/2/replication_mode = 1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xicp"]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_vohfk"]
+streams_count = 24
+stream_0/stream = ExtResource("5_mpjqc")
+stream_1/stream = ExtResource("6_rowux")
+stream_2/stream = ExtResource("17_mnv0f")
+stream_3/stream = ExtResource("22_hjwsu")
+stream_4/stream = ExtResource("23_5oplu")
+stream_5/stream = ExtResource("24_2jeri")
+stream_6/stream = ExtResource("25_8oscr")
+stream_7/stream = ExtResource("26_cmc6s")
+stream_8/stream = ExtResource("27_cpdsf")
+stream_9/stream = ExtResource("28_w0gtv")
+stream_10/stream = ExtResource("7_kcuv5")
+stream_11/stream = ExtResource("8_bk4gi")
+stream_12/stream = ExtResource("9_c12lm")
+stream_13/stream = ExtResource("10_15wk7")
+stream_14/stream = ExtResource("11_7jvrd")
+stream_15/stream = ExtResource("12_hieo1")
+stream_16/stream = ExtResource("13_7yr0p")
+stream_17/stream = ExtResource("14_ei1k4")
+stream_18/stream = ExtResource("15_kavpv")
+stream_19/stream = ExtResource("16_gowjd")
+stream_20/stream = ExtResource("18_we420")
+stream_21/stream = ExtResource("19_so5gv")
+stream_22/stream = ExtResource("20_mg5kn")
+stream_23/stream = ExtResource("21_mugss")
+
 [node name="Zombie" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 7
@@ -1061,6 +1112,9 @@ debug_color = Color(0.96127874, 8.663535e-07, 0.51400894, 0.41960785)
 script = ExtResource("4_3xicp")
 hurtbox_component = NodePath("../HurtBoxComponent")
 metadata/_custom_type_script = "uid://d0486n3t8f823"
+
+[node name="ZombieSounds" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_vohfk")
 
 [connection signal="body_entered" from="HurtBoxComponent" to="." method="_on_hurt_box_component_body_entered"]
 [connection signal="hurt" from="HurtBoxComponent" to="." method="_on_hurt_box_component_hurt"]

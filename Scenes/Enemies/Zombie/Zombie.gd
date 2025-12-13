@@ -25,6 +25,9 @@ var _vertical_velocity := 0.0
 var _is_on_floor := false
 @onready var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity") * gravity_scale
 
+@onready var zombie_sounds: AudioStreamPlayer3D = $ZombieSounds
+
+
 func _ready() -> void:
 	call_deferred("_randomize_walk_animation")
 	if ZombieManagerClass.instance:
@@ -165,3 +168,7 @@ func hit_by_fire_trail(damage: float):
 	can_be_hit_by_fire_trail = false
 	get_tree().create_timer(1).timeout.connect(func(): can_be_hit_by_fire_trail = true)
 	hurt_box_component.hit.rpc(WeaponList.WeaponType.MACHINE_GUN, global_position, Vector3.UP, damage)
+
+func play_zombie_sound():
+	if not zombie_sounds.playing:
+		zombie_sounds.play()

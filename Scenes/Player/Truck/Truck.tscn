@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=4 uid="uid://bdylrsie22fbj"]
+[gd_scene load_steps=45 format=4 uid="uid://bdylrsie22fbj"]
 
 [ext_resource type="Script" uid="uid://cb1d68tv6df13" path="res://Scenes/Player/Truck/Truck.gd" id="1_wasro"]
 [ext_resource type="Material" uid="uid://bn4catggyg8nl" path="res://Assets/Truck/Material.tres" id="2_wasro"]
@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://ct3nsw6afbw1s" path="res://Scenes/World/Texture/—Pngtree—sand cloud realistic texture_6688638.png" id="3_lh4vc"]
 [ext_resource type="PackedScene" uid="uid://cr5elbqtrx0ek" path="res://Scenes/Player/Shooter/Shooter.tscn" id="5_ccxdk"]
 [ext_resource type="PackedScene" uid="uid://wdlpq6fxbtfc" path="res://Scenes/Shop/Shop.tscn" id="6_a3vf4"]
+[ext_resource type="AudioStream" uid="uid://v1k2dkyu7fvy" path="res://Assets/Sounds/bubbles-single2.wav" id="7_ewfix"]
+[ext_resource type="AudioStream" uid="uid://ddalnonvvdnd6" path="res://Assets/Sounds/bubbles-single3.wav" id="8_q75hj"]
+[ext_resource type="AudioStream" uid="uid://b2kbyc6ur4gb" path="res://Assets/Sounds/engine_heavy_loop.wav" id="9_q75hj"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vcd85"]
 _surfaces = [{
@@ -749,5 +752,17 @@ top_level = true
 [node name="FireTrailTimer" type="Timer" parent="."]
 wait_time = 0.1
 autostart = true
+
+[node name="Sounds" type="Node3D" parent="."]
+
+[node name="FuelTaken" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("7_ewfix")
+
+[node name="MoneyTaken" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("8_q75hj")
+
+[node name="Vroom" type="AudioStreamPlayer3D" parent="Sounds"]
+stream = ExtResource("9_q75hj")
+bus = &"Truck"
 
 [connection signal="timeout" from="FireTrailTimer" to="." method="_on_fire_trail_timer_timeout"]

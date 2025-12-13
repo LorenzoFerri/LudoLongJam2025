@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bow45h53alwmo"]
+[gd_scene load_steps=20 format=3 uid="uid://bow45h53alwmo"]
 
 [ext_resource type="PackedScene" uid="uid://bdylrsie22fbj" path="res://Scenes/Player/Truck/Truck.tscn" id="1_folwd"]
 [ext_resource type="Script" uid="uid://cv51dkhpyy8if" path="res://Scenes/World/World.gd" id="1_s53j1"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dia570vexn0q7" path="res://Scenes/World/Texture/Ground080_1K-JPG_Roughness.jpg" id="8_v0w7q"]
 [ext_resource type="Script" uid="uid://d3eobcxci3psv" path="res://Scenes/World/WorldSpawner.gd" id="10_kuxid"]
 [ext_resource type="Script" uid="uid://c2foq3vbvf651" path="res://Scenes/Enemies/Zombie/ZombieManager.gd" id="10_ng1ea"]
+[ext_resource type="AudioStream" uid="uid://belxdqq72ygfj" path="res://Assets/Sounds/bgm.ogg" id="12_0d0er"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ecnql"]
 panorama = ExtResource("2_s53j1")
@@ -65,6 +66,11 @@ _limits = [0.1, 5.0, 0.0, 30.0]
 _data = [Vector2(0, 5), 0.0, -0.1345873, 0, 0, Vector2(30, 0.1), -0.16812922, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="Curve" id="Curve_x5sp8"]
+_limits = [0.0, 1.0, 0.0, 30.0]
+_data = [Vector2(0, 0.099380255), 0.0, 0.0, 0, 0, Vector2(15.078125, 0.332448), 0.035117414, 0.035117414, 0, 0, Vector2(30, 1), -0.0002923148, 0.0, 0, 0]
+point_count = 3
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_s53j1")
 
@@ -113,9 +119,14 @@ collisions_per_frame = 16
 collision_margin = 0.01
 spawn_rate_curve = SubResource("Curve_ng1ea")
 spawn_cooldown_curve = SubResource("Curve_0d0er")
+big_zombie_spawn_curve = SubResource("Curve_x5sp8")
 player = NodePath("../Truck")
 
 [node name="WorldSpawner" type="Node3D" parent="." node_paths=PackedStringArray("terrain_manager")]
 script = ExtResource("10_kuxid")
 terrain_manager = NodePath("../TerrainManager")
 metadata/_custom_type_script = "uid://d3eobcxci3psv"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_0d0er")
+autoplay = true

@@ -12,11 +12,13 @@ var zombie_scene = preload("res://Scenes/Enemies/Zombie/Zombie.tscn")
 @export var spawn_rate_curve: Curve
 @export var spawn_cooldown_curve: Curve
 
+@export var big_zombie_spawn_curve: Curve
+
 var zombie_spawn_cooldown := 0.0
 
-var big_zombie_chance := 0.5
-
 @export var player: Node3D
+
+@export var zombie_play_sound_chance := 0.0005
 
 static var instance: ZombieManager
 
@@ -149,11 +151,14 @@ func _update_zombie(zombie: Zombie, delta: float, perform_collision: bool) -> vo
 	PhysicsServer3D.body_set_state(zombie.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, new_transform)
 	zombie.manager_apply_transform(new_transform, dir, vertical_velocity, on_floor)
 
+	if randf() <= zombie_play_sound_chance:
+		zombie.play_zombie_sound()
 
 func spawn_zombie():
 	var zombie: Zombie = zombie_scene.instantiate()
 	zombie.position = get_random_point_within_radius(randf_range(min_zombie_spawn_distance, max_zombie_spawn_distance))	
 	
+	var big_zombie_chance = big_zombie_spawn_curve.sample(elapsed_time / 60)
 	var is_big_zombie = randf() < big_zombie_chance
 	
 	if is_big_zombie:

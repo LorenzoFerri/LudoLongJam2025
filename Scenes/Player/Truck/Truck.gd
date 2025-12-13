@@ -32,6 +32,17 @@ const fire_trail_scene = preload("res://Scenes/Particles/FireTrail/FireTrail.tsc
 @onready var fire_trail_container: Node3D = $FireTrail
 
 
+@onready var fuel_taken: AudioStreamPlayer3D = $Sounds/FuelTaken
+@onready var money_taken: AudioStreamPlayer3D = $Sounds/MoneyTaken
+@onready var engine_audio: AudioStreamPlayer3D = $Sounds/Vroom
+
+@export_category("Engine sound")
+@export var min_pitch := 0.4
+@export var max_pitch := 2.8
+@export var accel_threshold := 10
+
+
+
 var inside_goal: Goal = null
 
 var next_goal_position: Vector3 = Vector3.ZERO
@@ -68,23 +79,23 @@ func _process(delta: float) -> void:
 	if multiplayer.is_server():
 		PlayerState.current_speed = current_speed
 	
+	var current_max_speed = MAX_SPEED_MPS
+	var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
+	if speed_upgrades.size() != 0:
+		var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
+		if current_max_speed > 0:
+			current_max_speed += flatValue
+		else:
+			current_max_speed -= flatValue
+		current_max_speed *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
+		
+	
 	if multiplayer.get_unique_id() == MultiplayerManager.get_driver_id():
 		camera.current = true
 		
 		var throttle_input = Input.get_action_strength("accelerate")
 		var brake_input = Input.get_action_strength("brake")
 		var steering_direction = Input.get_action_strength("steer_left") - Input.get_action_strength("steer_right")
-
-		var current_max_speed = MAX_SPEED_MPS
-		var speed_upgrades = PlayerState.get_active_effects_by_type("SpeedModifier")
-		if speed_upgrades.size() != 0:
-			var flatValue = speed_upgrades.reduce(func(acc, e): return acc + e.flatValue, 0.0)
-			if current_max_speed > 0:
-				current_max_speed += flatValue
-			else:
-				current_max_speed -= flatValue
-			current_max_speed *= 1 + speed_upgrades.reduce(func(acc, e): return acc + e.percentageValue, 0.0) / 100
-		
 
 		# %Speed.text = str(floor(current_speed)) + "/" + str(current_max_speed)
 		%Speed.text = "%5.2f/%5.2f km/h" % [current_speed * 3.6, current_max_speed * 3.6]
@@ -155,6 +166,28 @@ func _process(delta: float) -> void:
 		toggle_goal_interact_button(false)
 		inside_goal.interact()
 		shop.show_shop()
+	
+	
+	var accelerating = abs(PlayerState.engine_force) > accel_threshold
+	# Start engine sound when accelerating
+	if accelerating:
+		if not engine_audio.playing:
+			engine_audio.play()
+	else:
+		# Fade out instead of stopping abruptly (optional)
+		engine_audio.volume_db = lerp(engine_audio.volume_db, -40.0, delta * 2.0)
+		if engine_audio.volume_db < -35.0:
+			engine_audio.stop()
+		return
+
+	# Reset volume if playing
+	engine_audio.volume_db = lerp(engine_audio.volume_db, 0.0, delta * 2)
+
+	# Pitch based on speed
+	#var clamping = (current_speed - current_max_speed) if current_speed < 0 else abs(current_speed + current_max_speed)
+	var speed_ratio = clamp(abs(current_speed) / current_max_speed, 0.0, 1.0)
+	engine_audio.pitch_scale = lerp(min_pitch, max_pitch, speed_ratio)
+	engine_audio.pitch_scale += randf_range(-0.02, 0.02)
 
 
 func _on_fire_trail_timer_timeout() -> void:
@@ -185,3 +218,8 @@ func _on_fire_trail_timer_timeout() -> void:
 		trail.position = rear_right_wheel.global_position
 		fire_trail_container.add_child(trail, true)
 	
+func play_fuel_sound():
+	fuel_taken.play()
+
+func play_money_sound():
+	money_taken.play()

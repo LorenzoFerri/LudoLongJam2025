@@ -8,7 +8,7 @@ signal picked_up
 @export var bob_height: float = 0.1      # how high/low it moves
 @export var bob_speed: float = 2       # how fast it bobs
 
-@export var score_gain: float = 1000.0
+@export var score_gain: float = 400.0
 
 var was_taken = false
 

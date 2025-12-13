@@ -7,7 +7,7 @@ var blood_decal = preload("res://Assets/Decal/Blood.png")
 const ZombieManagerClass := preload("res://Scenes/Enemies/Zombie/ZombieManager.gd")
 @export var gravity_scale := 10.0
 @export var walk_animation_name := "walk"
-@export var money_gain_on_kill := 10.0
+@export var money_gain_on_kill := 100.0
 @export var fuel_loss_on_hit := PlayerState.STARTING_FUEL / 10
 
 @onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $rig_CharRoot005/Object_245/Skeleton3D/PhysicalBoneSimulator3D

@@ -61,7 +61,6 @@ func build_remote_ui(upgrade_dicts: Array):
 	else:
 		refresh_button.disabled = false
 	
-	visible = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 
@@ -87,7 +86,7 @@ func show_shop():
 		if child != null:
 			child.grab_focus()
 	
-	Engine.time_scale = 0.1
+	Engine.time_scale = 0.0
 
 func _on_refresh_button_pressed() -> void:
 	refresh.rpc(false)

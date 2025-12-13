@@ -21,6 +21,7 @@ const fire_trail_scene = preload("res://Scenes/Particles/FireTrail/FireTrail.tsc
 @onready var weapon: Node3D = $Weapon
 @onready var weapon_position: Marker3D = $WeaponPosition
 @onready var rear_left_gpu_particles: GPUParticles3D = $RearLeftGPUParticles
+@onready var rear_right_gpu_particles: GPUParticles3D = $RearRightGPUParticles
 
 @onready var score_label: Label = %ScoreLabel
 @onready var fuel_bar: ProgressBar = $CanvasLayer/FuelBar
@@ -150,7 +151,8 @@ func _process(delta: float) -> void:
 		
 
 	rear_left_gpu_particles.emitting = rear_left_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_left > 5
-
+	rear_right_gpu_particles.emitting = rear_right_wheel.is_in_contact() and (brake > 0 or PlayerState.engine_force < 0) and RPM_right > 5
+	
 	if multiplayer.is_server():
 		PlayerState.fuel -= abs(engine_force) * PlayerState.fuel_decay_rate * delta
 	

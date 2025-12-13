@@ -4,6 +4,8 @@ class_name Truck
 
 const fire_trail_scene = preload("res://Scenes/Particles/FireTrail/FireTrail.tscn")
 
+const lobby_scene = preload("res://Scenes/Menu/Lobby.tscn")
+
 @export var MAX_ENGINE_FORCE: float = 2000.0
 @export var MAX_BRAKE_FORCE: float = 100.0
 @export var REVERSE_FORCE: float = 400.0
@@ -25,6 +27,7 @@ const fire_trail_scene = preload("res://Scenes/Particles/FireTrail/FireTrail.tsc
 
 @onready var score_label: Label = %ScoreLabel
 @onready var fuel_bar: ProgressBar = $CanvasLayer/FuelBar
+@onready var fuel_label: Label = $CanvasLayer/FuelBar/FuelLabel
 @onready var shop_label: Label = %ShopLabel
 @onready var shop: ShopUI = $CanvasLayer/Shop
 
@@ -63,6 +66,9 @@ func toggle_goal_interact_button(make_visible: bool):
 func _process(delta: float) -> void:
 	camera_arm.position = camera_arm.position.move_toward(position + Vector3.UP * 2, delta * 100)
 	
+	if PlayerState.fuel <= 0:
+		get_tree().change_scene_to_packed.call_deferred(lobby_scene)
+	
 	if shop.visible:
 		return
 	
@@ -74,7 +80,9 @@ func _process(delta: float) -> void:
 	
 	fuel_bar.value = PlayerState.fuel
 	fuel_bar.max_value = PlayerState.max_fuel
-	score_label.text = str(PlayerState.money)
+	fuel_label.text = "{0}/{1}".format([int(floor(PlayerState.fuel / 100)), int(floor(PlayerState.max_fuel / 100))])
+	var is_euro = str(PlayerState.money)[0] in ["1", "4", "8", "9"]
+	score_label.text = str(PlayerState.money) + ("€" if is_euro else ".-")
 	
 	var current_speed = linear_velocity.dot(-global_transform.basis.z)
 	if multiplayer.is_server():

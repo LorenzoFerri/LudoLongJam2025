@@ -172,6 +172,7 @@ func spawn_zombie():
 		zombie.fuel_loss_on_hit *= 3
 		zombie.health_component.max_hp *= 3
 		zombie.health_component.hp *= 3
+		zombie.money_gain_on_kill += 5
 
 # Function to pick a random point within a radius around this node
 func get_random_point_within_radius(radius: float = 20.0) -> Vector3:

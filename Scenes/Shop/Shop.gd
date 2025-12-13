@@ -81,7 +81,7 @@ func show_shop():
 		
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if multiplayer.is_server():
-		refresh(true)
+		refresh.rpc(true)
 	visible = true
 	
 	await get_tree().process_frame

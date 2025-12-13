@@ -798,6 +798,7 @@ stream_2/stream = ExtResource("31_15wk7")
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_q16kx")
+speed = 10.0
 
 [node name="MainCollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6212463e-05, 0.8196602, 0.0036621094)

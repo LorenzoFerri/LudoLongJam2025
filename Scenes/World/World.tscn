@@ -58,17 +58,17 @@ heightmap_texture = ExtResource("6_s53j1")
 
 [sub_resource type="Curve" id="Curve_ng1ea"]
 _limits = [5.0, 200.0, 0.0, 30.0]
-_data = [Vector2(0, 5), 0.0, 16.093307, 0, 0, Vector2(30, 200), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 58.61313), 0.0, 16.093307, 0, 0, Vector2(30, 200), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_0d0er"]
 _limits = [0.1, 5.0, 0.0, 30.0]
-_data = [Vector2(0, 5), 0.0, -0.1345873, 0, 0, Vector2(30, 0.1), -0.16812922, 0.0, 0, 0]
+_data = [Vector2(0, 2.043309), 0.0, -0.1345873, 0, 0, Vector2(30, 0.1), -0.16812922, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_x5sp8"]
 _limits = [0.0, 1.0, 0.0, 30.0]
-_data = [Vector2(0, 0.099380255), 0.0, 0.0, 0, 0, Vector2(15.078125, 0.332448), 0.035117414, 0.035117414, 0, 0, Vector2(30, 1), -0.0002923148, 0.0, 0, 0]
+_data = [Vector2(0, 0.20194656), 0.0, 0.0, 0, 0, Vector2(15.414574, 0.43552315), 0.035117414, 0.035117414, 0, 0, Vector2(30, 1), -0.0002923148, 0.0, 0, 0]
 point_count = 3
 
 [node name="World" type="Node3D"]
